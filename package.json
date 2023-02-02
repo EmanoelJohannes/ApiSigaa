@@ -1,0 +1,33 @@
+{
+  "name": "empreenderApp-Backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Emanoel Johannes",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "date-fns": "^2.13.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-brute": "^1.0.1",
+    "express-brute-redis": "^0.0.1",
+    "express-handlebars": "^3.1.0",
+    "form-data": "^3.0.0",
+    "gerar-cpf": "^2.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.20.7",
+    "nodemailer": "^6.4.2",
+    "nodemailer-express-handlebars": "^3.1.0",
+    "nodemon": "^2.0.2",
+    "pg": "^7.17.1",
+    "request": "^2.81.0",
+    "simple-mask-money": "^3.0.1"
+  }
+}
