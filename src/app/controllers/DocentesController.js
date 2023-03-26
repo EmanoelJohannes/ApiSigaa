@@ -47,6 +47,8 @@ class UserController {
               totalManager += projeto.qntd_docentes;
             });
           
+            departamentos.sort();
+
             return { departamentos, totalManager, managerFromDepartaments, years: [...years] };
           }, { departamentos: [], totalManager: 0, managerFromDepartaments: [], years: [] });
           
@@ -87,12 +89,12 @@ class UserController {
             const departamentos = acc.departamentos;
             let totalManager = acc.totalManager;
             const managerFromDepartaments = acc.managerFromDepartaments;
+            
             docente.docentes.forEach((element) => {
               // Popula o array de departamentos              
               if(departamentos.indexOf(element.Departamento) === -1) {
                 departamentos.push(element.Departamento);
               }
-
               // Calcula o total de docentes por departamento
               const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === element.Departamento);
               if(departamentoIndex === -1) {
@@ -104,6 +106,8 @@ class UserController {
             
             // Calcula o total de docentes
             totalManager += docente.docentes.length;
+          
+            departamentos.sort();
             return { departamentos, totalManager, managerFromDepartaments };
           }, { departamentos: [], totalManager: 0, managerFromDepartaments: [] });
   
