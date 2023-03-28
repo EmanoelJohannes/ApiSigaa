@@ -15,7 +15,7 @@ routes.get('/docentes', docentesController.getDocentes);
 routes.get('/docentes-by-year/:year', docentesController.getDocentesByYear);
 
 routes.get('/discentes', discentesController.getDiscentes)
-routes.get('/docentes-by-year/:year', discentesController.getDiscentesByYear);
+routes.get('/discentes-by-year/:year', discentesController.getDiscentesByYear);
 
 routes.get('/externos', externosController.getExternos)
 routes.get('/externos-by-year/:year', externosController.getExternosByYear);

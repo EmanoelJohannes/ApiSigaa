@@ -93,7 +93,7 @@ class externosControler {
             let totalManager = acc.totalManager;
             const managerFromDepartaments = acc.managerFromDepartaments;
             
-            externo.externos.forEach((element) => {
+            externo.externo.forEach((element) => {
               // Popula o array de departamentos              
               if(departamentos.indexOf(element.Departamento) === -1) {
                 departamentos.push(element.Departamento);
@@ -108,7 +108,7 @@ class externosControler {
             });
             
             // Calcula o total de externos
-            totalManager += externo.externos.length;
+            totalManager += externo.externo.length;
           
             departamentos.sort();
             return { departamentos, totalManager, managerFromDepartaments };

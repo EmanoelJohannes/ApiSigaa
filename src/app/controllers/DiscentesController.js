@@ -80,7 +80,6 @@ class DiscentesController {
         }
         try {
           const discentesData = JSON.parse(data);
-
           const filteredData = discentesData.filter(data => data[0].codigo.includes(`-${year}`));
 
           // Processa os dados utilizando o método reduce
@@ -89,7 +88,7 @@ class DiscentesController {
             let totalDiscentes = acc.totalDiscentes;
             const discentesFromDepartaments = acc.discentesFromDepartaments;
             
-            discente.discentes.forEach((element) => {
+            discente.discente.forEach((element) => {
               // Popula o array de departamentos              
               if(departamentos.indexOf(element.Departamento) === -1) {
                 departamentos.push(element.Departamento);
@@ -104,7 +103,7 @@ class DiscentesController {
             });
             
             // Calcula o total de discentes
-            totalDiscentes += discente.discentes.length;
+            totalDiscentes += discente.discente.length;
           
             departamentos.sort();
             return { departamentos, totalDiscentes, discentesFromDepartaments };
