@@ -8,7 +8,6 @@ class DiscentesController {
 
   async getDiscentes (req, res) {
     let file = path.join(__dirname,'../files/discentes.json');
-    console.log("File: ", file)
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
@@ -17,45 +16,42 @@ class DiscentesController {
         try {
 
           const discentesData = JSON.parse(data);
-          console.log(discentesData)
           
           // Processa os dados utilizando o método reduce
           const result = discentesData.reduce((acc, current) => {
             const departamentos = acc.departamentos;
-            let totalManager = acc.totalManager;
-            const managerFromDepartaments = acc.managerFromDepartaments;
+            let totalDiscentes = acc.totalDiscentes;
+            const discentesFromDepartaments = acc.discentesFromDepartaments;
             const years = new Set(acc.years);
           
             // Adiciona o ano à lista de anos encontrados
             current.forEach((projeto) => {
               years.add(parseInt(projeto.codigo.split('-')[1]));
           
-              projeto.discentes.forEach((discente) => {
+              projeto.discente.forEach((discente) => {
                 // Popula o array de departamentos
                 if (departamentos.indexOf(discente.Departamento) === -1) {
                   departamentos.push(discente.Departamento);
                 }
           
                 // Calcula o total de discentes por departamento
-                const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === discente.Departamento);
+                const departamentoIndex = discentesFromDepartaments.findIndex((d) => d[0] === discente.Departamento);
                 if (departamentoIndex === -1) {
-                  managerFromDepartaments.push([discente.Departamento, 1]);
+                  discentesFromDepartaments.push([discente.Departamento, 1]);
                 } else {
-                  managerFromDepartaments[departamentoIndex][1] += 1;
+                  discentesFromDepartaments[departamentoIndex][1] += 1;
                 }
               });
           
               // Calcula o total de discentes do projeto
-              totalManager += projeto.qntd_discentes;
+              totalDiscentes += projeto.qntd_discente;
             });
           
             departamentos.sort();
-            console.log("Executou")
-            return { departamentos, totalManager, managerFromDepartaments, years: [...years] };
-          }, { departamentos: [], totalManager: 0, managerFromDepartaments: [], years: [] });
+            return { departamentos, totalDiscentes, discentesFromDepartaments, years: [...years] };
+          }, { departamentos: [], totalDiscentes: 0, discentesFromDepartaments: [], years: [] });
           
-          result.managerFromDepartaments.unshift(['Departamento', 'Quantidade']);
-          console.log("Resultado: ", result)
+          result.discentesFromDepartaments.unshift(['Departamento', 'Quantidade']);
           callback(null, result);
         } catch (err) {
           callback(err);
@@ -90,8 +86,8 @@ class DiscentesController {
           // Processa os dados utilizando o método reduce
           const result = filteredData[0].reduce((acc, discente) => {
             const departamentos = acc.departamentos;
-            let totalManager = acc.totalManager;
-            const managerFromDepartaments = acc.managerFromDepartaments;
+            let totalDiscentes = acc.totalDiscentes;
+            const discentesFromDepartaments = acc.discentesFromDepartaments;
             
             discente.discentes.forEach((element) => {
               // Popula o array de departamentos              
@@ -99,22 +95,22 @@ class DiscentesController {
                 departamentos.push(element.Departamento);
               }
               // Calcula o total de discentes por departamento
-              const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === element.Departamento);
+              const departamentoIndex = discentesFromDepartaments.findIndex((d) => d[0] === element.Departamento);
               if(departamentoIndex === -1) {
-                managerFromDepartaments.push([element.Departamento, 1]);
+                discentesFromDepartaments.push([element.Departamento, 1]);
               } else {
-                managerFromDepartaments[departamentoIndex][1] += 1;
+                discentesFromDepartaments[departamentoIndex][1] += 1;
               }
             });
             
             // Calcula o total de discentes
-            totalManager += discente.discentes.length;
+            totalDiscentes += discente.discentes.length;
           
             departamentos.sort();
-            return { departamentos, totalManager, managerFromDepartaments };
-          }, { departamentos: [], totalManager: 0, managerFromDepartaments: [] });
+            return { departamentos, totalDiscentes, discentesFromDepartaments };
+          }, { departamentos: [], totalDiscentes: 0, discentesFromDepartaments: [] });
   
-          result.managerFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.discentesFromDepartaments.unshift(['Departamento', 'Quantidade']);
 
           callback(null, result);
         } catch (err) {
