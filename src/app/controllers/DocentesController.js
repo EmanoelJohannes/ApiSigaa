@@ -2,10 +2,11 @@ const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
-class UserController {
-  async getDocentes(req, res) {
-    let file = path.join(__dirname, "../files/docentes.json");
+const FILE = path.join(__dirname,'../files/docentes.json');
 
+class UserController {
+
+  async getDocentes (req, res) {
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
@@ -92,8 +93,8 @@ class UserController {
         }
       });
     }
-
-    readJson(file, (err, data) => {
+  
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {
@@ -102,8 +103,7 @@ class UserController {
     });
   }
 
-  async getDocentesByYear(req, res) {
-    let file = path.join(__dirname, "../files/docentes.json");
+  async getDocentesByYear (req, res) {
     const year = req.params.year;
 
     function readJson(path, callback) {
@@ -161,8 +161,8 @@ class UserController {
         }
       });
     }
-
-    readJson(file, (err, data) => {
+  
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {
@@ -170,6 +170,37 @@ class UserController {
       }
     });
   }
+
+  async getDocentesLista(req, res) {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+  
+    function readJson(path, callback) {
+      fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+          return callback(err);
+        }
+        try {
+          const result = JSON.parse(data);
+          callback(null, result);
+        } catch (err) {
+          callback(err);
+        }
+      });
+    }
+  
+    readJson(FILE, (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        const paginatedData = data.slice(startIndex, endIndex); // filtrar dados para a página atual
+        res.json(paginatedData);
+      }
+    });
+  }
+  
 }
 
 module.exports = new UserController();
