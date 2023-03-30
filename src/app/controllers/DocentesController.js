@@ -195,7 +195,7 @@ class UserController {
       if (err) {
         res.send(err);
       } else {
-        const paginatedData = data.slice(startIndex, endIndex); // filtrar dados para a página atual
+        const paginatedData = data[0].slice(startIndex, endIndex); // data[0] retorna apenas os de 2020, ajustar depois
         res.json(paginatedData);
       }
     });

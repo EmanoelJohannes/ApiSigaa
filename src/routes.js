@@ -13,6 +13,7 @@ const externosController = require('./app/controllers/ExternosController');
 // Rotas a partir desse ponto são rotas com autentificação
 routes.get('/docentes', docentesController.getDocentes);
 routes.get('/docentes-by-year/:year', docentesController.getDocentesByYear);
+routes.get('/get-docentes-lista', docentesController.getDocentesLista);
 
 routes.get('/discentes', discentesController.getDiscentes)
 routes.get('/discentes-by-year/:year', discentesController.getDiscentesByYear);
