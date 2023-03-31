@@ -2,11 +2,10 @@ const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
-const FILE = path.join(__dirname,'../files/docentes.json');
+const FILE = path.join(__dirname, "../files/docentes.json");
 
 class UserController {
-
-  async getDocentes (req, res) {
+  async getDocentes(req, res) {
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
@@ -93,7 +92,7 @@ class UserController {
         }
       });
     }
-  
+
     readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
@@ -103,7 +102,7 @@ class UserController {
     });
   }
 
-  async getDocentesByYear (req, res) {
+  async getDocentesByYear(req, res) {
     const year = req.params.year;
 
     function readJson(path, callback) {
@@ -161,7 +160,7 @@ class UserController {
         }
       });
     }
-  
+
     readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
@@ -176,9 +175,9 @@ class UserController {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-  
+
     function readJson(path, callback) {
-      fs.readFile(path, 'utf8', (err, data) => {
+      fs.readFile(path, "utf8", (err, data) => {
         if (err) {
           return callback(err);
         }
@@ -190,7 +189,7 @@ class UserController {
         }
       });
     }
-  
+
     readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
@@ -200,7 +199,65 @@ class UserController {
       }
     });
   }
-  
+
+  async getDepartamentInYears(req, res) {
+    const departament = req.params.departament.toUpperCase();
+
+    function readJson(path, callback) {
+      fs.readFile(path, "utf8", (err, data) => {
+        if (err) {
+          return callback(err);
+        }
+        try {
+          const docentesData = JSON.parse(data);
+
+          // Processa os dados utilizando o método reduce
+          const result = docentesData.reduce((acc, docente) => {
+            const departamentYears = acc.departamentYears || [];
+
+            docente.forEach((member) => {
+              const year = parseInt(member.codigo.split("-")[1]);
+
+              member.docentes.forEach((element) => {
+
+                if (element.Departamento === departament) {
+
+                  if (departamentYears.length) {
+                    const index = departamentYears.findIndex((el) => el[0] === year);
+                    if (index === -1) {
+                      departamentYears.push([year, 1]);
+                    } else {
+                      departamentYears[index][1] += 1;
+                    }
+                  } else {
+                    departamentYears.push([year, 1]);
+                  }
+                }
+                console.log(departamentYears)
+
+              });
+            });
+
+            return {departamentYears};
+          }, {departamentYears: []});
+
+          result.departamentYears.unshift(["Ano", "Total"]);
+
+          callback(null, result);
+        } catch (err) {
+          callback(err);
+        }
+      });
+    }
+
+    readJson(FILE, (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(data);
+      }
+    });
+  }
 }
 
 module.exports = new UserController();
