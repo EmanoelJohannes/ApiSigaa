@@ -23,10 +23,24 @@ class DiscentesController {
             let totalDiscentes = acc.totalDiscentes;
             const discentesFromDepartaments = acc.discentesFromDepartaments;
             const years = new Set(acc.years);
-          
+            const yearsDiscentes = acc.yearsDiscentes;
+
             // Adiciona o ano à lista de anos encontrados
             current.forEach((projeto) => {
-              years.add(parseInt(projeto.codigo.split('-')[1]));
+              const year = parseInt(projeto.codigo.split("-")[1]);
+
+              // Adiciona o ano à lista de anos encontrados
+              years.add(year);
+              
+              // Verifica se o ano já está presente no objeto de resultados
+              const index = yearsDiscentes.findIndex(
+                (item) => item[0] === year
+              );
+              if (index === -1) {
+                yearsDiscentes.push([year, projeto.qntd_discente]);
+              } else {
+                yearsDiscentes[index][1] += projeto.qntd_discente;
+              }
           
               projeto.discente.forEach((discente) => {
                 // Popula o array de departamentos
@@ -48,10 +62,12 @@ class DiscentesController {
             });
           
             departamentos.sort();
-            return { departamentos, totalDiscentes, discentesFromDepartaments, years: [...years] };
-          }, { departamentos: [], totalDiscentes: 0, discentesFromDepartaments: [], years: [] });
+            return { departamentos, totalDiscentes, discentesFromDepartaments, years: [...years], yearsDiscentes };
+          }, { departamentos: [], totalDiscentes: 0, discentesFromDepartaments: [], years: [], yearsDiscentes: [] });
           
           result.discentesFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.yearsDiscentes.unshift(["Ano", "Total"]);
+
           callback(null, result);
         } catch (err) {
           callback(err);
