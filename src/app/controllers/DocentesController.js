@@ -201,8 +201,9 @@ class UserController {
   }
 
   async getDepartamentInYears(req, res) {
-    const departament = req.params.departament.toUpperCase();
 
+    const departament = req.body.personName
+    console.log("Departaments: ", departament)
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
@@ -214,29 +215,34 @@ class UserController {
           // Processa os dados utilizando o método reduce
           const result = docentesData.reduce((acc, docente) => {
             const departamentYears = acc.departamentYears || [];
+            const newDepartamentYears = acc.newDepartamentYears || [];
 
             docente.forEach((member) => {
               const year = parseInt(member.codigo.split("-")[1]);
 
               member.docentes.forEach((element) => {
+                departament.forEach((dep) => {
+                  if (element.Departamento === dep) {
 
-                if (element.Departamento === departament) {
-
-                  if (departamentYears.length) {
-                    const index = departamentYears.findIndex((el) => el[0] === year);
-                    if (index === -1) {
-                      departamentYears.push([year, 1]);
+                    if (departamentYears.length) {
+                      const index = departamentYears.findIndex((el) => el[0] === year);
+                      if (index === -1) {
+                        departamentYears.push([year, 1]);
+                      } else {
+                        departamentYears[index][1] += 1;
+                      }
                     } else {
-                      departamentYears[index][1] += 1;
+                      departamentYears.push([year, 1]);
+                      newDepartamentYears.push(['Ano', dep])
+                      newDepartamentYears.push([year, 1]);
+
                     }
-                  } else {
-                    departamentYears.push([year, 1]);
                   }
-                }
-                console.log(departamentYears)
+                })
 
               });
             });
+            console.log(newDepartamentYears)
 
             return {departamentYears};
           }, {departamentYears: []});

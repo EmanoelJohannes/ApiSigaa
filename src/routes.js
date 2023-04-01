@@ -14,7 +14,7 @@ const externosController = require('./app/controllers/ExternosController');
 routes.get('/docentes', docentesController.getDocentes);
 routes.get('/docentes-by-year/:year', docentesController.getDocentesByYear);
 routes.get('/get-docentes-lista', docentesController.getDocentesLista);
-routes.get('/get-departament-in-years/:departament', docentesController.getDepartamentInYears);
+routes.post('/post-departament-in-years', docentesController.getDepartamentInYears);
 
 routes.get('/discentes', discentesController.getDiscentes)
 routes.get('/discentes-by-year/:year', discentesController.getDiscentesByYear);
