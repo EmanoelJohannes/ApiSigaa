@@ -49,10 +49,10 @@ class UserController {
                   const departamentoIndex = managerFromDepartaments.findIndex(
                     (d) => d[0] === docente.Departamento
                   );
-                  if (departamentoIndex === -1) {
-                    managerFromDepartaments.push([docente.Departamento, 1]);
-                  } else {
+                  if (departamentoIndex >= 0) {
                     managerFromDepartaments[departamentoIndex][1] += 1;
+                  } else {
+                    managerFromDepartaments.push([docente.Departamento, 1]);
                   }
                 });
 
@@ -61,6 +61,8 @@ class UserController {
               });
 
               departamentos.sort();
+
+              console.log(managerFromDepartaments);
 
               return {
                 departamentos,
