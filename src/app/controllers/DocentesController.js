@@ -1,6 +1,7 @@
 const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
+const { id } = require("date-fns/locale");
 
 const FILE = path.join(__dirname, "../files/docentes.json");
 
@@ -203,7 +204,8 @@ class UserController {
   async getDepartamentInYears(req, res) {
 
     const departament = req.body.personName
-    console.log("Departaments: ", departament)
+
+    
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
@@ -211,6 +213,14 @@ class UserController {
         }
         try {
           const docentesData = JSON.parse(data);
+
+          let firstArrayDep = []
+
+          firstArrayDep.push('Ano')
+
+          departament.forEach((dep) =>{
+            firstArrayDep.push(dep)
+          })
 
           // Processa os dados utilizando o método reduce
           const result = docentesData.reduce((acc, docente) => {
@@ -224,8 +234,11 @@ class UserController {
                 departament.forEach((dep) => {
                   if (element.Departamento === dep) {
 
+                    const index = departamentYears.findIndex((el) => el[0] === year);
+                    const indexYear = newDepartamentYears.findIndex((el) => el[0] === year);
+                    const indexDep = firstArrayDep.findIndex((el) => el === dep);
+
                     if (departamentYears.length) {
-                      const index = departamentYears.findIndex((el) => el[0] === year);
                       if (index === -1) {
                         departamentYears.push([year, 1]);
                       } else {
@@ -233,9 +246,21 @@ class UserController {
                       }
                     } else {
                       departamentYears.push([year, 1]);
-                      newDepartamentYears.push(['Ano', dep])
-                      newDepartamentYears.push([year, 1]);
+                    }
 
+                    if(newDepartamentYears.length){
+                      if(indexYear === -1){
+                        newDepartamentYears.push([year, 1]);
+                      }
+                      else {
+                        if(!newDepartamentYears[indexYear][indexDep]){
+                          newDepartamentYears[indexYear][indexDep] = 1
+                        }else {
+                          newDepartamentYears[indexYear][indexDep] += 1;
+                        }
+                      }
+                    }else {
+                      newDepartamentYears.push([year, 1]);
                     }
                   }
                 })
@@ -244,13 +269,17 @@ class UserController {
             });
             console.log(newDepartamentYears)
 
-            return {departamentYears};
-          }, {departamentYears: []});
+            return {departamentYears, newDepartamentYears};
+          }, {departamentYears: [], newDepartamentYears: []});
 
           result.departamentYears.unshift(["Ano", "Total"]);
+          result.newDepartamentYears.unshift(firstArrayDep);
 
+          console.log(result)
+          
           callback(null, result);
         } catch (err) {
+          console.log(err)
           callback(err);
         }
       });
