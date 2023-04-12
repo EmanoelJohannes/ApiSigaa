@@ -63,8 +63,6 @@ class UserController {
 
               departamentos.sort();
 
-              console.log(managerFromDepartaments);
-
               return {
                 departamentos,
                 totalManager,
@@ -79,6 +77,100 @@ class UserController {
               managerFromDepartaments: [],
               years: [],
               yearsDocentes: [],
+            }
+          );
+
+          result.managerFromDepartaments.unshift([
+            "Departamento",
+            "Quantidade",
+          ]);
+
+          result.yearsDocentes.unshift(["Ano", "Total"]);
+
+          callback(null, result);
+        } catch (err) {
+          callback(err);
+        }
+      });
+    }
+
+    readJson(FILE, (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(data);
+      }
+    });
+  }
+
+  async getDocentesNaoRepetidos(req, res) {
+    function readJson(path, callback) {
+      fs.readFile(path, "utf8", (err, data) => {
+        if (err) {
+          return callback(err);
+        }
+        try {
+          const docentesData = JSON.parse(data);
+
+          const result = docentesData.reduce(
+            (acc, current) => {
+              const departamentos = acc.departamentos;
+              let totalManager = acc.totalManager;
+              const managerFromDepartaments = acc.managerFromDepartaments;
+              const years = new Set(acc.years);
+              const yearsDocentes = acc.yearsDocentes;
+              const docentesContados = acc.docentesContados || {};
+
+              current.forEach((projeto) => {
+                const year = parseInt(projeto.codigo.split("-")[1]);
+                years.add(year);
+
+                if (!yearsDocentes.some((item) => item[0] === year)) {
+                  yearsDocentes.push([year, projeto.qntd_docentes]);
+                } else {
+                  const index = yearsDocentes.findIndex((item) => item[0] === year);
+                  yearsDocentes[index][1] += projeto.qntd_docentes;
+                }
+
+                let docentesNaoContados = projeto.docentes.filter((docente) => !docentesContados[docente.nome]);
+                
+                docentesNaoContados.forEach((docente) => {
+                  if (departamentos.indexOf(docente.Departamento) === -1) {
+                    departamentos.push(docente.Departamento);
+                  }
+
+                  const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === docente.Departamento);
+
+                  if (departamentoIndex >= 0) {
+                    managerFromDepartaments[departamentoIndex][1] += 1;
+                  } else {
+                    managerFromDepartaments.push([docente.Departamento, 1]);
+                  }
+
+                  docentesContados[docente.nome] = true;
+                });
+
+                totalManager += docentesNaoContados.length;
+              });
+
+              departamentos.sort();
+
+              return {
+                departamentos,
+                totalManager,
+                managerFromDepartaments,
+                years: [...years],
+                yearsDocentes,
+                docentesContados,
+              };
+            },
+            {
+              departamentos: [],
+              totalManager: 0,
+              managerFromDepartaments: [],
+              years: [],
+              yearsDocentes: [],
+              docentesContados: {},
             }
           );
 
