@@ -273,13 +273,45 @@ class UserController {
 
             return {departamentYears, newDepartamentYears};
           }, {departamentYears: [], newDepartamentYears: []});
-
-          result.departamentYears.unshift(["Ano", "Total"]);
-          result.newDepartamentYears.unshift(firstArrayDep);
-
-          console.log(result)
           
-          callback(null, result);
+
+        // Processa os dados utilizando o método reduce
+        const resultTeste = docentesData.reduce((acc, docente) => {
+          const yearDepartmentCounts = acc.yearDepartmentCounts || {};
+
+          docente.forEach((member) => {
+            const year = parseInt(member.codigo.split("-")[1]);
+
+            member.docentes.forEach((element) => {
+              const department = element.Departamento;
+              if (firstArrayDep.includes(department)) {
+                yearDepartmentCounts[year] = yearDepartmentCounts[year] || {};
+                yearDepartmentCounts[year][department] = yearDepartmentCounts[year][department] || 0;
+                yearDepartmentCounts[year][department] += 1;
+              }
+            });
+          });
+
+          return {yearDepartmentCounts};
+        }, {yearDepartmentCounts: {}});
+
+        // Organiza os dados no formato de matriz
+        const matrixData = [['Ano', ...firstArrayDep]];
+        Object.keys(resultTeste.yearDepartmentCounts).forEach((year) => {
+          const departmentCounts = resultTeste.yearDepartmentCounts[year];
+          const row = [parseInt(year)];
+          firstArrayDep.forEach((department) => {
+            row.push(departmentCounts[department] || 0);
+          });
+          matrixData.push(row);
+        });
+        
+        matrixData.forEach((arr) => {
+          arr.splice(1, 1)
+        })
+        console.log(matrixData);
+          
+          callback(null, {result, matrixData});
         } catch (err) {
           console.log(err)
           callback(err);
