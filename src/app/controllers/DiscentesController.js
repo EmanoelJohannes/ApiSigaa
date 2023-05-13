@@ -7,7 +7,7 @@ const fs = require('fs');
 class DiscentesController {
 
   async getDiscentes (req, res) {
-    let file = path.join(__dirname,'../files/discentes.json');
+    let file = path.join(__dirname,'../files/projetos.json');
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
@@ -86,7 +86,7 @@ class DiscentesController {
 
 
   async getDiscentesByYear (req, res) {
-    let file = path.join(__dirname,'../files/discentes.json');
+    let file = path.join(__dirname,'../files/projetos.json');
     const year = req.params.year;
 
     function readJson(path, callback) {
@@ -96,7 +96,10 @@ class DiscentesController {
         }
         try {
           const discentesData = JSON.parse(data);
+
           const filteredData = discentesData.filter(data => data[0].codigo.includes(`-${year}`));
+
+
 
           // Processa os dados utilizando o método reduce
           const result = filteredData[0].reduce((acc, discente) => {

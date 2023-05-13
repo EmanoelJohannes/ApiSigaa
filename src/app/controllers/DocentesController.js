@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const { id } = require("date-fns/locale");
 
-const FILE = path.join(__dirname, "../files/docentes.json");
+const FILE = path.join(__dirname, "../files/projetos.json");
 
 class UserController {
   async getDocentes(req, res) {
@@ -37,7 +37,7 @@ class UserController {
                 if (index === -1) {
                   yearsDocentes.push([year, projeto.qntd_docentes]);
                 } else {
-                  yearsDocentes[index][1] += projeto.qntd_docentes;
+                  yearsDocentes[index][1] += projeto.qntd_docente;
                 }
 
                 projeto.docentes.forEach((docente) => {
@@ -58,7 +58,7 @@ class UserController {
                 });
 
                 // Calcula o total de docentes do projeto
-                totalManager += projeto.qntd_docentes;
+                totalManager += projeto.qntd_docente;
               });
 
               departamentos.sort();
@@ -129,7 +129,7 @@ class UserController {
                   yearsDocentes.push([year, projeto.qntd_docentes]);
                 } else {
                   const index = yearsDocentes.findIndex((item) => item[0] === year);
-                  yearsDocentes[index][1] += projeto.qntd_docentes;
+                  yearsDocentes[index][1] += projeto.qntd_docente;
                 }
 
                 let docentesNaoContados = projeto.docentes.filter((docente) => !docentesContados[docente.nome]);

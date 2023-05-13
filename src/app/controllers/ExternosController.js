@@ -7,7 +7,7 @@ const fs = require('fs');
 class externosControler {
 
   async getExternos (req, res) {
-    let file = path.join(__dirname,'../files/externos.json');
+    let file = path.join(__dirname,'../files/projetos.json');
 
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
@@ -29,8 +29,8 @@ class externosControler {
             current.forEach((projeto) => {
               years.add(parseInt(projeto.codigo.split('-')[1]));
 
-              if(projeto.externo){
-                projeto.externo.forEach((externo) => {
+              if(projeto.externo_equipe){
+                projeto.externo_equipe.forEach((externo) => {
                   // Popula o array de departamentos
                   if (departamentos.indexOf(externo.Departamento) === -1) {
                     departamentos.push(externo.Departamento);
@@ -93,9 +93,10 @@ class externosControler {
             let totalManager = acc.totalManager;
             const managerFromDepartaments = acc.managerFromDepartaments;
             
-            externo.externo.forEach((element) => {
+            externo.externo_equipe.forEach((element) => {
               // Popula o array de departamentos              
               if(departamentos.indexOf(element.Departamento) === -1) {
+                console.log(departamentos)
                 departamentos.push(element.Departamento);
               }
               // Calcula o total de externos por departamento

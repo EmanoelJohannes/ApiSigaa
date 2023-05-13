@@ -10,6 +10,8 @@ const discentesController = require('./app/controllers/DiscentesController');
 
 const externosController = require('./app/controllers/ExternosController');
 
+const metricsController = require('./app/controllers/MetricsController');
+
 // Rotas a partir desse ponto são rotas com autentificação
 routes.get('/docentes', docentesController.getDocentes);
 routes.get('/docentesNaoRepetidos', docentesController.getDocentesNaoRepetidos);
@@ -23,6 +25,9 @@ routes.get('/discentes-by-year/:year', discentesController.getDiscentesByYear);
 
 routes.get('/externos', externosController.getExternos)
 routes.get('/externos-by-year/:year', externosController.getExternosByYear);
+
+routes.get('/metrics', metricsController.getMetrics);
+
 
 routes.use(authMiddleware);
 
