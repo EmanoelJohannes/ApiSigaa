@@ -1,7 +1,7 @@
 require('dotenv/config');
 
 var data = ({
-    client: 'pg',
+    client: 'mysql',
     connection: {
         host: process.env.DB_HOST,
         user:  process.env.DB_USER,
@@ -14,8 +14,10 @@ var data = ({
 
 var connection = require('knex')(data);
 
-if (process.env.DB_USER == 'empreender_tst') console.log("Conectado ao PostGres - TESTES!");
-
-if (process.env.DB_USER == 'empreender_prd') console.log("Conectado ao PostGres - PRODUÇÃO!");
+if (connection) {
+    console.log("Conectado ao SIAPE - Local!");
+} else {
+    console.log("Não conectado")
+}
 
 module.exports = connection;
