@@ -1,7 +1,5 @@
-const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const { id } = require("date-fns/locale");
 
 const FILE = path.join(__dirname, "../files/docentes.json");
 

@@ -4,13 +4,18 @@ const routes = new express.Router();
 
 const authMiddleware = require('./app/middlewares/auth');
 
+const userController = require('./app/controllers/UserController');
+const sessionController = require('./app/controllers/SessionController');
 const docentesController = require('./app/controllers/DocentesController');
-
 const discentesController = require('./app/controllers/DiscentesController');
-
 const externosController = require('./app/controllers/ExternosController');
 
 // Rotas a partir desse ponto são rotas com autentificação
+routes.get('/users', userController.getUsers);
+routes.post('/storeUser', userController.storeUser);
+
+routes.post('/authenticate', sessionController.store);
+
 routes.get('/docentes', docentesController.getDocentes);
 routes.get('/docentesNaoRepetidos', docentesController.getDocentesNaoRepetidos);
 
