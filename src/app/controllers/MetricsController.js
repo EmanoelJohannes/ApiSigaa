@@ -1,4 +1,3 @@
-const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
@@ -62,9 +61,10 @@ class MetricsController {
             })
           })
 
+
           resultTipoFinanciamento.unshift(["Tipo", "Total"]);
 
-          callback(null, resultTipoFinanciamento);
+          callback(null, {resultTipoFinanciamento});
         } catch (err) {
           callback(err);
         }
@@ -79,6 +79,148 @@ class MetricsController {
       }
     });
   }
+
+
+  async getPublicMetric(req, res) {
+    let file = path.join(__dirname, "../files/projetos.json");
+    function readJson(path, callback) {
+      fs.readFile(path, "utf8", (err, data) => {
+        if (err) {
+          console.log(err);
+          return callback(err);
+        }
+        try {
+          const discentesData = JSON.parse(data);
+
+          const result = discentesData.reduce(
+            (acc, projects) => {
+              let estimadoInterno = acc.estimadoInterno;
+              let estimadoExterno = acc.estimadoExterno;
+              let atingido = acc.atingido;
+
+              projects.map((project) => {
+                if(project.situacao === 'CONCLUÍDA'){
+                  let estimado_interno = project.estimado_interno
+                  let estimado_externo = project.estimado_externo
+
+                  estimado_interno = parseInt(estimado_interno.replace(/[^0-9]/g,''));
+                  estimado_externo = parseInt(estimado_externo.replace(/[^0-9]/g,''));
+
+                  if(!estimado_interno){
+                    estimado_interno = 0
+                  }
+
+                  if(!estimado_externo){
+                    estimado_externo = 0
+                  }
+
+                  estimadoInterno += estimado_interno
+                  estimadoExterno += estimado_externo
+                  atingido += project.publico_atingido
+
+                }
+
+              });
+
+              return {
+                estimadoExterno, estimadoInterno, atingido,
+              };
+            },
+            {
+              estimadoExterno: 0, estimadoInterno: 0, atingido: 0
+            }
+          );
+
+          callback(null, result);
+        } catch (err) {
+          callback(err);
+        }
+      });
+    }
+    
+
+    readJson(file, (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(data);
+      }
+    });
+  }
+
+
+  async getPublicMetricByYear(req, res) {
+    
+    let file = path.join(__dirname, "../files/projetos.json");
+    const year = req.params.year;
+
+    function readJson(path, callback) {
+      fs.readFile(path, "utf8", (err, data) => {
+        if (err) {
+          console.log(err);
+          return callback(err);
+        }
+        try {
+          const discentesData = JSON.parse(data);
+
+          const filteredData = discentesData.filter(data => data[0].codigo.includes(`-${year}`));
+
+          const result = filteredData.reduce(
+            (acc, projects) => {
+              let estimadoInterno = acc.estimadoInterno;
+              let estimadoExterno = acc.estimadoExterno;
+              let atingido = acc.atingido;
+
+              projects.map((project) => {
+                if(project.situacao === 'CONCLUÍDA'){
+                  let estimado_interno = project.estimado_interno
+                  let estimado_externo = project.estimado_externo
+
+                  estimado_interno = parseInt(estimado_interno.replace(/[^0-9]/g,''));
+                  estimado_externo = parseInt(estimado_externo.replace(/[^0-9]/g,''));
+
+                  if(!estimado_interno){
+                    estimado_interno = 0
+                  }
+
+                  if(!estimado_externo){
+                    estimado_externo = 0
+                  }
+
+                  estimadoInterno += estimado_interno
+                  estimadoExterno += estimado_externo
+                  atingido += project.publico_atingido
+
+                }
+
+              });
+
+              return {
+                estimadoExterno, estimadoInterno, atingido,
+              };
+            },
+            {
+              estimadoExterno: 0, estimadoInterno: 0, atingido: 0
+            }
+          );
+
+          callback(null, result);
+        } catch (err) {
+          callback(err);
+        }
+      });
+    }
+    
+
+    readJson(file, (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(data);
+      }
+    });
+  }
+
 }
 
 module.exports = new MetricsController();

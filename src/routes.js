@@ -31,7 +31,9 @@ routes.get('/discentes-by-year/:year', discentesController.getDiscentesByYear);
 routes.get('/externos', externosController.getExternos)
 routes.get('/externos-by-year/:year', externosController.getExternosByYear);
 
-routes.get('/metrics', metricsController.getMetrics);
+routes.get('/metrics-financing', metricsController.getMetrics);
+routes.get('/metrics-public', metricsController.getPublicMetric);
+routes.get('/metrics-public-by-year/:year', metricsController.getPublicMetricByYear);
 
 
 routes.use(authMiddleware);

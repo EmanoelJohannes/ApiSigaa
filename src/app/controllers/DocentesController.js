@@ -33,7 +33,7 @@ class UserController {
                   (item) => item[0] === year
                 );
                 if (index === -1) {
-                  yearsDocentes.push([year, projeto.qntd_docentes]);
+                  yearsDocentes.push([year, projeto.qntd_docente]);
                 } else {
                   yearsDocentes[index][1] += projeto.qntd_docente;
                 }
