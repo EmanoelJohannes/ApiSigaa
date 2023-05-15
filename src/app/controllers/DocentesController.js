@@ -295,7 +295,8 @@ class UserController {
 
   async getDepartamentInYears(req, res) {
 
-    const departament = req.body.personName
+    const departament = req.body
+    console.log(departament)
 
     
     function readJson(path, callback) {
