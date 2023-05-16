@@ -12,6 +12,8 @@ const externosController = require('./app/controllers/ExternosController');
 
 const metricsController = require('./app/controllers/MetricsController');
 
+const generalMetricsController = require('./app/controllers/GeneralMetrics');
+
 // Rotas a partir desse ponto são rotas com autentificação
 routes.get('/users', userController.getUsers);
 routes.post('/storeUser', userController.storeUser);
@@ -34,6 +36,9 @@ routes.get('/externos-by-year/:year', externosController.getExternosByYear);
 routes.get('/metrics-financing', metricsController.getMetrics);
 routes.get('/metrics-public', metricsController.getPublicMetric);
 routes.get('/metrics-public-by-year/:year', metricsController.getPublicMetricByYear);
+
+routes.get('/generalMetrics', generalMetricsController.getGeneralMetrics);
+
 
 
 routes.use(authMiddleware);
