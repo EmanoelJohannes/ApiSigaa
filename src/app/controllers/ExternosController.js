@@ -19,7 +19,7 @@ class externosControler {
           const result = externosData.reduce((acc, current) => {
             const departamentos = acc.departamentos;
             let totalPeoples = acc.totalPeoples;
-            const peopleFromDepartaments = acc.peopleFromDepartaments;
+            const peoplesFromDepartaments = acc.peoplesFromDepartaments;
             const years = new Set(acc.years);
             const yearsPeople = acc.yearsPeople;
 
@@ -50,11 +50,11 @@ class externosControler {
                   }
             
                   // Calcula o total de externos por departamento
-                  const departamentoIndex = peopleFromDepartaments.findIndex((d) => d[0] === externo.Departamento);
+                  const departamentoIndex = peoplesFromDepartaments.findIndex((d) => d[0] === externo.Departamento);
                   if (departamentoIndex === -1) {
-                    peopleFromDepartaments.push([externo.Departamento, 1]);
+                    peoplesFromDepartaments.push([externo.Departamento, 1]);
                   } else {
-                    peopleFromDepartaments[departamentoIndex][1] += 1;
+                    peoplesFromDepartaments[departamentoIndex][1] += 1;
                   }
                 });
               }
@@ -64,10 +64,10 @@ class externosControler {
           
             departamentos.sort();
 
-            return { departamentos, totalPeoples, peopleFromDepartaments, years: [...years], yearsPeople };
-          }, { departamentos: [], totalPeoples: 0, peopleFromDepartaments: [], years: [], yearsPeople: [] });
+            return { departamentos, totalPeoples, peoplesFromDepartaments, years: [...years], yearsPeople };
+          }, { departamentos: [], totalPeoples: 0, peoplesFromDepartaments: [], years: [], yearsPeople: [] });
           
-          result.peopleFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.peoplesFromDepartaments.unshift(['Departamento', 'Quantidade']);
           result.yearsPeople.unshift(["Ano", "Total"]);
 
           callback(null, result);
@@ -105,7 +105,7 @@ class externosControler {
           const result = filteredData[0].reduce((acc, externo) => {
             const departamentos = acc.departamentos;
             let totalPeoples = acc.totalPeoples;
-            const peopleFromDepartaments = acc.peopleFromDepartaments;
+            const peoplesFromDepartaments = acc.peoplesFromDepartaments;
             
             externo.externo_equipe.forEach((element) => {
               // Popula o array de departamentos              
@@ -114,11 +114,11 @@ class externosControler {
                 departamentos.push(element.Departamento);
               }
               // Calcula o total de externos por departamento
-              const departamentoIndex = peopleFromDepartaments.findIndex((d) => d[0] === element.Departamento);
+              const departamentoIndex = peoplesFromDepartaments.findIndex((d) => d[0] === element.Departamento);
               if(departamentoIndex === -1) {
-                peopleFromDepartaments.push([element.Departamento, 1]);
+                peoplesFromDepartaments.push([element.Departamento, 1]);
               } else {
-                peopleFromDepartaments[departamentoIndex][1] += 1;
+                peoplesFromDepartaments[departamentoIndex][1] += 1;
               }
             });
             
@@ -126,10 +126,10 @@ class externosControler {
             totalPeoples += externo.externo.length;
           
             departamentos.sort();
-            return { departamentos, totalPeoples, peopleFromDepartaments };
-          }, { departamentos: [], totalPeoples: 0, peopleFromDepartaments: [] });
+            return { departamentos, totalPeoples, peoplesFromDepartaments };
+          }, { departamentos: [], totalPeoples: 0, peoplesFromDepartaments: [] });
   
-          result.peopleFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.peoplesFromDepartaments.unshift(['Departamento', 'Quantidade']);
 
           callback(null, result);
         } catch (err) {
