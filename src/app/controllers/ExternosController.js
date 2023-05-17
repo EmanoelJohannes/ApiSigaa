@@ -21,10 +21,26 @@ class externosControler {
             let totalManager = acc.totalManager;
             const managerFromDepartaments = acc.managerFromDepartaments;
             const years = new Set(acc.years);
+            const yearsPeople = acc.yearsPeople;
+
+            
           
             // Adiciona o ano à lista de anos encontrados
             current.forEach((projeto) => {
-              years.add(parseInt(projeto.codigo.split('-')[1]));
+                years.add(parseInt(projeto.codigo.split('-')[1]));
+
+                const year = parseInt(projeto.codigo.split("-")[1]);
+
+              
+                // Verifica se o ano já está presente no objeto de resultados
+                const index = yearsPeople.findIndex(
+                  (item) => item[0] === year
+                );
+                if (index === -1) {
+                  yearsPeople.push([year, projeto.qntd_externo]);
+                } else {
+                  yearsPeople[index][1] += projeto.qntd_externo;
+                }
 
               if(projeto.externo_equipe){
                 projeto.externo_equipe.forEach((externo) => {
@@ -48,10 +64,11 @@ class externosControler {
           
             departamentos.sort();
 
-            return { departamentos, totalManager, managerFromDepartaments, years: [...years] };
-          }, { departamentos: [], totalManager: 0, managerFromDepartaments: [], years: [] });
+            return { departamentos, totalManager, managerFromDepartaments, years: [...years], yearsPeople };
+          }, { departamentos: [], totalManager: 0, managerFromDepartaments: [], years: [], yearsPeople: [] });
           
           result.managerFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.yearsPeople.unshift(["Ano", "Total"]);
 
           callback(null, result);
         } catch (err) {

@@ -19,7 +19,7 @@ class UserController {
               let totalManager = acc.totalManager;
               const managerFromDepartaments = acc.managerFromDepartaments;
               const years = new Set(acc.years);
-              const yearsDocentes = acc.yearsDocentes;
+              const yearsPeople = acc.yearsPeople;
 
               // Adiciona o ano à lista de anos encontrados
               current.forEach((projeto) => {
@@ -29,13 +29,13 @@ class UserController {
                 years.add(year);
 
                 // Verifica se o ano já está presente no objeto de resultados
-                const index = yearsDocentes.findIndex(
+                const index = yearsPeople.findIndex(
                   (item) => item[0] === year
                 );
                 if (index === -1) {
-                  yearsDocentes.push([year, projeto.qntd_docente]);
+                  yearsPeople.push([year, projeto.qntd_docente]);
                 } else {
-                  yearsDocentes[index][1] += projeto.qntd_docente;
+                  yearsPeople[index][1] += projeto.qntd_docente;
                 }
 
                 projeto.docentes.forEach((docente) => {
@@ -66,7 +66,7 @@ class UserController {
                 totalManager,
                 managerFromDepartaments,
                 years: [...years],
-                yearsDocentes,
+                yearsPeople,
               };
             },
             {
@@ -74,7 +74,7 @@ class UserController {
               totalManager: 0,
               managerFromDepartaments: [],
               years: [],
-              yearsDocentes: [],
+              yearsPeople: [],
             }
           );
 
@@ -83,7 +83,7 @@ class UserController {
             "Quantidade",
           ]);
 
-          result.yearsDocentes.unshift(["Ano", "Total"]);
+          result.yearsPeople.unshift(["Ano", "Total"]);
 
           callback(null, result);
         } catch (err) {
