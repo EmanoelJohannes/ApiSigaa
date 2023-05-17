@@ -129,6 +129,143 @@ class externosControler {
       }
     });
   }
+
+
+  async getDepartamentInYears(req, res) {
+    const departament = req.body;
+    let FILE = path.join(__dirname, '../files/projetos.json');
+
+    function readJson(path, callback) {
+      fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+          return callback(err);
+        }
+        try {
+          const discentesData = JSON.parse(data);
+
+          let firstArrayDep = [];
+
+          firstArrayDep.push('Ano');
+
+          departament.forEach((dep) => {
+            firstArrayDep.push(dep);
+          });
+
+          // Processa os dados utilizando o método reduce
+          const result = discentesData.reduce(
+            (acc, discente) => {
+              const departamentYears = acc.departamentYears || [];
+              const newDepartamentYears = acc.newDepartamentYears || [];
+
+              discente.forEach((member) => {
+                const year = parseInt(member.codigo.split('-')[1]);
+
+                member.externo_equipe.forEach((element) => {
+                  departament.forEach((dep) => {
+                    if (element.Departamento === dep) {
+                      const index = departamentYears.findIndex(
+                        (el) => el[0] === year
+                      );
+                      const indexYear = newDepartamentYears.findIndex(
+                        (el) => el[0] === year
+                      );
+                      const indexDep = firstArrayDep.findIndex(
+                        (el) => el === dep
+                      );
+
+                      if (departamentYears.length) {
+                        if (index === -1) {
+                          departamentYears.push([year, 1]);
+                        } else {
+                          departamentYears[index][1] += 1;
+                        }
+                      } else {
+                        departamentYears.push([year, 1]);
+                      }
+
+                      if (newDepartamentYears.length) {
+                        if (indexYear === -1) {
+                          newDepartamentYears.push([year, 1]);
+                        } else {
+                          if (!newDepartamentYears[indexYear][indexDep]) {
+                            newDepartamentYears[indexYear][indexDep] = 1;
+                          } else {
+                            newDepartamentYears[indexYear][indexDep] += 1;
+                          }
+                        }
+                      } else {
+                        newDepartamentYears.push([year, 1]);
+                      }
+                    }
+                  });
+                });
+              });
+              console.log(newDepartamentYears);
+
+              return { departamentYears, newDepartamentYears };
+            },
+            { departamentYears: [], newDepartamentYears: [] }
+          );
+
+          // Processa os dados utilizando o método reduce
+          const resultTeste = discentesData.reduce(
+            (acc, discente) => {
+              const yearDepartmentCounts = acc.yearDepartmentCounts || {};
+
+              discente.forEach((member) => {
+                const year = parseInt(member.codigo.split('-')[1]);
+
+                member.externo_equipe.forEach((element) => {
+                  const department = element.Departamento;
+                  if (firstArrayDep.includes(department)) {
+                    yearDepartmentCounts[year] =
+                      yearDepartmentCounts[year] || {};
+                    yearDepartmentCounts[year][department] =
+                      yearDepartmentCounts[year][department] || 0;
+                    yearDepartmentCounts[year][department] += 1;
+                  }
+                });
+              });
+
+              return { yearDepartmentCounts };
+            },
+            { yearDepartmentCounts: {} }
+          );
+
+          // Organiza os dados no formato de matriz
+          const matrixData = [['Ano', ...firstArrayDep]];
+          Object.keys(resultTeste.yearDepartmentCounts).forEach((year) => {
+            const departmentCounts = resultTeste.yearDepartmentCounts[year];
+            const row = [parseInt(year)];
+            firstArrayDep.forEach((department) => {
+              row.push(departmentCounts[department] || 0);
+            });
+            matrixData.push(row);
+          });
+
+          matrixData.forEach((arr) => {
+            arr.splice(1, 1);
+          });
+          console.log(matrixData);
+
+          callback(null, { result, matrixData });
+        } catch (err) {
+          console.log(err);
+          callback(err);
+        }
+      });
+    }
+
+    readJson(FILE, (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(data);
+      }
+    });
+  }
+
+
 }
 
 module.exports = new externosControler();

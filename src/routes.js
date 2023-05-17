@@ -29,9 +29,11 @@ routes.post('/post-departament-in-years', docentesController.getDepartamentInYea
 
 routes.get('/discentes', discentesController.getDiscentes)
 routes.get('/discentes-by-year/:year', discentesController.getDiscentesByYear);
+routes.post('/post-departament-in-years-discente', discentesController.getDepartamentInYears);
 
 routes.get('/externos', externosController.getExternos)
 routes.get('/externos-by-year/:year', externosController.getExternosByYear);
+routes.post('/post-departament-in-years-externo', externosController.getDepartamentInYears);
 
 routes.get('/metrics-financing', metricsController.getMetrics);
 routes.get('/metrics-public', metricsController.getPublicMetric);
