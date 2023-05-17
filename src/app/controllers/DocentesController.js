@@ -16,8 +16,8 @@ class UserController {
           const result = docentesData.reduce(
             (acc, current) => {
               const departamentos = acc.departamentos;
-              let totalManager = acc.totalManager;
-              const managerFromDepartaments = acc.managerFromDepartaments;
+              let totalPeoples = acc.totalPeoples;
+              const peoplesFromDepartaments = acc.peoplesFromDepartaments;
               const years = new Set(acc.years);
               const yearsPeople = acc.yearsPeople;
 
@@ -45,40 +45,40 @@ class UserController {
                   }
 
                   // Calcula o total de docentes por departamento
-                  const departamentoIndex = managerFromDepartaments.findIndex(
+                  const departamentoIndex = peoplesFromDepartaments.findIndex(
                     (d) => d[0] === docente.Departamento
                   );
                   if (departamentoIndex >= 0) {
-                    managerFromDepartaments[departamentoIndex][1] += 1;
+                    peoplesFromDepartaments[departamentoIndex][1] += 1;
                   } else {
-                    managerFromDepartaments.push([docente.Departamento, 1]);
+                    peoplesFromDepartaments.push([docente.Departamento, 1]);
                   }
                 });
 
                 // Calcula o total de docentes do projeto
-                totalManager += projeto.qntd_docente;
+                totalPeoples += projeto.qntd_docente;
               });
 
               departamentos.sort();
 
               return {
                 departamentos,
-                totalManager,
-                managerFromDepartaments,
+                totalPeoples,
+                peoplesFromDepartaments,
                 years: [...years],
                 yearsPeople,
               };
             },
             {
               departamentos: [],
-              totalManager: 0,
-              managerFromDepartaments: [],
+              totalPeoples: 0,
+              peoplesFromDepartaments: [],
               years: [],
               yearsPeople: [],
             }
           );
 
-          result.managerFromDepartaments.unshift([
+          result.peoplesFromDepartaments.unshift([
             "Departamento",
             "Quantidade",
           ]);
@@ -113,8 +113,8 @@ class UserController {
           const result = docentesData.reduce(
             (acc, current) => {
               const departamentos = acc.departamentos;
-              let totalManager = acc.totalManager;
-              const managerFromDepartaments = acc.managerFromDepartaments;
+              let totalPeoples = acc.totalPeoples;
+              const peoplesFromDepartaments = acc.peoplesFromDepartaments;
               const years = new Set(acc.years);
               const yearsDocentes = acc.yearsDocentes;
               const docentesContados = acc.docentesContados || {};
@@ -137,26 +137,26 @@ class UserController {
                     departamentos.push(docente.Departamento);
                   }
 
-                  const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === docente.Departamento);
+                  const departamentoIndex = peoplesFromDepartaments.findIndex((d) => d[0] === docente.Departamento);
 
                   if (departamentoIndex >= 0) {
-                    managerFromDepartaments[departamentoIndex][1] += 1;
+                    peoplesFromDepartaments[departamentoIndex][1] += 1;
                   } else {
-                    managerFromDepartaments.push([docente.Departamento, 1]);
+                    peoplesFromDepartaments.push([docente.Departamento, 1]);
                   }
 
                   docentesContados[docente.nome] = true;
                 });
 
-                totalManager += docentesNaoContados.length;
+                totalPeoples += docentesNaoContados.length;
               });
 
               departamentos.sort();
 
               return {
                 departamentos,
-                totalManager,
-                managerFromDepartaments,
+                totalPeoples,
+                peoplesFromDepartaments,
                 years: [...years],
                 yearsDocentes,
                 docentesContados,
@@ -164,15 +164,15 @@ class UserController {
             },
             {
               departamentos: [],
-              totalManager: 0,
-              managerFromDepartaments: [],
+              totalPeoples: 0,
+              peoplesFromDepartaments: [],
               years: [],
               yearsDocentes: [],
               docentesContados: {},
             }
           );
 
-          result.managerFromDepartaments.unshift([
+          result.peoplesFromDepartaments.unshift([
             "Departamento",
             "Quantidade",
           ]);
@@ -214,8 +214,8 @@ class UserController {
           const result = filteredData[0].reduce(
             (acc, docente) => {
               const departamentos = acc.departamentos;
-              let totalManager = acc.totalManager;
-              const managerFromDepartaments = acc.managerFromDepartaments;
+              let totalPeoples = acc.totalPeoples;
+              const peoplesFromDepartaments = acc.peoplesFromDepartaments;
 
               docente.docentes.forEach((element) => {
                 // Popula o array de departamentos
@@ -223,26 +223,26 @@ class UserController {
                   departamentos.push(element.Departamento);
                 }
                 // Calcula o total de docentes por departamento
-                const departamentoIndex = managerFromDepartaments.findIndex(
+                const departamentoIndex = peoplesFromDepartaments.findIndex(
                   (d) => d[0] === element.Departamento
                 );
                 if (departamentoIndex === -1) {
-                  managerFromDepartaments.push([element.Departamento, 1]);
+                  peoplesFromDepartaments.push([element.Departamento, 1]);
                 } else {
-                  managerFromDepartaments[departamentoIndex][1] += 1;
+                  peoplesFromDepartaments[departamentoIndex][1] += 1;
                 }
               });
 
               // Calcula o total de docentes
-              totalManager += docente.docentes.length;
+              totalPeoples += docente.docentes.length;
 
               departamentos.sort();
-              return { departamentos, totalManager, managerFromDepartaments };
+              return { departamentos, totalPeoples, peoplesFromDepartaments };
             },
-            { departamentos: [], totalManager: 0, managerFromDepartaments: [] }
+            { departamentos: [], totalPeoples: 0, peoplesFromDepartaments: [] }
           );
 
-          result.managerFromDepartaments.unshift([
+          result.peoplesFromDepartaments.unshift([
             "Departamento",
             "Quantidade",
           ]);

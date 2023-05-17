@@ -18,8 +18,8 @@ class externosControler {
           // Processa os dados utilizando o método reduce
           const result = externosData.reduce((acc, current) => {
             const departamentos = acc.departamentos;
-            let totalManager = acc.totalManager;
-            const managerFromDepartaments = acc.managerFromDepartaments;
+            let totalPeoples = acc.totalPeoples;
+            const peopleFromDepartaments = acc.peopleFromDepartaments;
             const years = new Set(acc.years);
             const yearsPeople = acc.yearsPeople;
 
@@ -50,24 +50,24 @@ class externosControler {
                   }
             
                   // Calcula o total de externos por departamento
-                  const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === externo.Departamento);
+                  const departamentoIndex = peopleFromDepartaments.findIndex((d) => d[0] === externo.Departamento);
                   if (departamentoIndex === -1) {
-                    managerFromDepartaments.push([externo.Departamento, 1]);
+                    peopleFromDepartaments.push([externo.Departamento, 1]);
                   } else {
-                    managerFromDepartaments[departamentoIndex][1] += 1;
+                    peopleFromDepartaments[departamentoIndex][1] += 1;
                   }
                 });
               }
               // Calcula o total de externos do projeto
-              totalManager += projeto.qntd_externo;
+              totalPeoples += projeto.qntd_externo;
             });
           
             departamentos.sort();
 
-            return { departamentos, totalManager, managerFromDepartaments, years: [...years], yearsPeople };
-          }, { departamentos: [], totalManager: 0, managerFromDepartaments: [], years: [], yearsPeople: [] });
+            return { departamentos, totalPeoples, peopleFromDepartaments, years: [...years], yearsPeople };
+          }, { departamentos: [], totalPeoples: 0, peopleFromDepartaments: [], years: [], yearsPeople: [] });
           
-          result.managerFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.peopleFromDepartaments.unshift(['Departamento', 'Quantidade']);
           result.yearsPeople.unshift(["Ano", "Total"]);
 
           callback(null, result);
@@ -104,8 +104,8 @@ class externosControler {
           // Processa os dados utilizando o método reduce
           const result = filteredData[0].reduce((acc, externo) => {
             const departamentos = acc.departamentos;
-            let totalManager = acc.totalManager;
-            const managerFromDepartaments = acc.managerFromDepartaments;
+            let totalPeoples = acc.totalPeoples;
+            const peopleFromDepartaments = acc.peopleFromDepartaments;
             
             externo.externo_equipe.forEach((element) => {
               // Popula o array de departamentos              
@@ -114,22 +114,22 @@ class externosControler {
                 departamentos.push(element.Departamento);
               }
               // Calcula o total de externos por departamento
-              const departamentoIndex = managerFromDepartaments.findIndex((d) => d[0] === element.Departamento);
+              const departamentoIndex = peopleFromDepartaments.findIndex((d) => d[0] === element.Departamento);
               if(departamentoIndex === -1) {
-                managerFromDepartaments.push([element.Departamento, 1]);
+                peopleFromDepartaments.push([element.Departamento, 1]);
               } else {
-                managerFromDepartaments[departamentoIndex][1] += 1;
+                peopleFromDepartaments[departamentoIndex][1] += 1;
               }
             });
             
             // Calcula o total de externos
-            totalManager += externo.externo.length;
+            totalPeoples += externo.externo.length;
           
             departamentos.sort();
-            return { departamentos, totalManager, managerFromDepartaments };
-          }, { departamentos: [], totalManager: 0, managerFromDepartaments: [] });
+            return { departamentos, totalPeoples, peopleFromDepartaments };
+          }, { departamentos: [], totalPeoples: 0, peopleFromDepartaments: [] });
   
-          result.managerFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          result.peopleFromDepartaments.unshift(['Departamento', 'Quantidade']);
 
           callback(null, result);
         } catch (err) {

@@ -16,8 +16,8 @@ class DiscentesController {
           const result = discentesData.reduce(
             (acc, current) => {
               const departamentos = acc.departamentos;
-              let totalDiscentes = acc.totalDiscentes;
-              const discentesFromDepartaments = acc.discentesFromDepartaments;
+              let totalPeoples = acc.totalPeoples;
+              const peoplesFromDepartaments = acc.peoplesFromDepartaments;
               const years = new Set(acc.years);
               const yearsPeople = acc.yearsPeople;
 
@@ -45,39 +45,39 @@ class DiscentesController {
                   }
 
                   // Calcula o total de discentes por departamento
-                  const departamentoIndex = discentesFromDepartaments.findIndex(
+                  const departamentoIndex = peoplesFromDepartaments.findIndex(
                     (d) => d[0] === discente.Departamento
                   );
                   if (departamentoIndex === -1) {
-                    discentesFromDepartaments.push([discente.Departamento, 1]);
+                    peoplesFromDepartaments.push([discente.Departamento, 1]);
                   } else {
-                    discentesFromDepartaments[departamentoIndex][1] += 1;
+                    peoplesFromDepartaments[departamentoIndex][1] += 1;
                   }
                 });
 
                 // Calcula o total de discentes do projeto
-                totalDiscentes += projeto.qntd_discente;
+                totalPeoples += projeto.qntd_discente;
               });
 
               departamentos.sort();
               return {
                 departamentos,
-                totalDiscentes,
-                discentesFromDepartaments,
+                totalPeoples,
+                peoplesFromDepartaments,
                 years: [...years],
                 yearsPeople,
               };
             },
             {
               departamentos: [],
-              totalDiscentes: 0,
-              discentesFromDepartaments: [],
+              totalPeoples: 0,
+              peoplesFromDepartaments: [],
               years: [],
               yearsPeople: [],
             }
           );
 
-          result.discentesFromDepartaments.unshift([
+          result.peoplesFromDepartaments.unshift([
             'Departamento',
             'Quantidade',
           ]);
@@ -119,8 +119,8 @@ class DiscentesController {
           const result = filteredData[0].reduce(
             (acc, discente) => {
               const departamentos = acc.departamentos;
-              let totalDiscentes = acc.totalDiscentes;
-              const discentesFromDepartaments = acc.discentesFromDepartaments;
+              let totalPeoples = acc.totalPeoples;
+              const peoplesFromDepartaments = acc.peoplesFromDepartaments;
 
               discente.discente.forEach((element) => {
                 // Popula o array de departamentos
@@ -128,34 +128,34 @@ class DiscentesController {
                   departamentos.push(element.Departamento);
                 }
                 // Calcula o total de discentes por departamento
-                const departamentoIndex = discentesFromDepartaments.findIndex(
+                const departamentoIndex = peoplesFromDepartaments.findIndex(
                   (d) => d[0] === element.Departamento
                 );
                 if (departamentoIndex === -1) {
-                  discentesFromDepartaments.push([element.Departamento, 1]);
+                  peoplesFromDepartaments.push([element.Departamento, 1]);
                 } else {
-                  discentesFromDepartaments[departamentoIndex][1] += 1;
+                  peoplesFromDepartaments[departamentoIndex][1] += 1;
                 }
               });
 
               // Calcula o total de discentes
-              totalDiscentes += discente.discente.length;
+              totalPeoples += discente.discente.length;
 
               departamentos.sort();
               return {
                 departamentos,
-                totalDiscentes,
-                discentesFromDepartaments,
+                totalPeoples,
+                peoplesFromDepartaments,
               };
             },
             {
               departamentos: [],
-              totalDiscentes: 0,
-              discentesFromDepartaments: [],
+              totalPeoples: 0,
+              peoplesFromDepartaments: [],
             }
           );
 
-          result.discentesFromDepartaments.unshift([
+          result.peoplesFromDepartaments.unshift([
             'Departamento',
             'Quantidade',
           ]);
