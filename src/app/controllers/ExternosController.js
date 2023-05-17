@@ -87,49 +87,58 @@ class externosControler {
     });
   }
 
-  async getExternosByYear (req, res) {
-    let file = path.join(__dirname,'../files/externos.json');
+  async getExternosByYear(req, res) {
     const year = req.params.year;
+    let FILE = path.join(__dirname,'../files/projetos.json');
 
     function readJson(path, callback) {
-      fs.readFile(path, 'utf8', (err, data) => {
+      fs.readFile(path, "utf8", (err, data) => {
         if (err) {
           return callback(err);
         }
         try {
           const externosData = JSON.parse(data);
 
-          const filteredData = externosData.filter(data => data[0].codigo.includes(`-${year}`));
+          const filteredData = externosData.filter((data) =>
+            data[0].codigo.includes(`-${year}`)
+          );
 
           // Processa os dados utilizando o método reduce
-          const result = filteredData[0].reduce((acc, externo) => {
-            const departamentos = acc.departamentos;
-            let totalPeoples = acc.totalPeoples;
-            const peoplesFromDepartaments = acc.peoplesFromDepartaments;
-            
-            externo.externo_equipe.forEach((element) => {
-              // Popula o array de departamentos              
-              if(departamentos.indexOf(element.Departamento) === -1) {
-                console.log(departamentos)
-                departamentos.push(element.Departamento);
-              }
-              // Calcula o total de externos por departamento
-              const departamentoIndex = peoplesFromDepartaments.findIndex((d) => d[0] === element.Departamento);
-              if(departamentoIndex === -1) {
-                peoplesFromDepartaments.push([element.Departamento, 1]);
-              } else {
-                peoplesFromDepartaments[departamentoIndex][1] += 1;
-              }
-            });
-            
-            // Calcula o total de externos
-            totalPeoples += externo.externo.length;
-          
-            departamentos.sort();
-            return { departamentos, totalPeoples, peoplesFromDepartaments };
-          }, { departamentos: [], totalPeoples: 0, peoplesFromDepartaments: [] });
-  
-          result.peoplesFromDepartaments.unshift(['Departamento', 'Quantidade']);
+          const result = filteredData[0].reduce(
+            (acc, externo) => {
+              const departamentos = acc.departamentos;
+              let totalPeoples = acc.totalPeoples;
+              const peoplesFromDepartaments = acc.peoplesFromDepartaments;
+
+              externo.externo_equipe.forEach((element) => {
+                // Popula o array de departamentos
+                if (departamentos.indexOf(element.Departamento) === -1) {
+                  departamentos.push(element.Departamento);
+                }
+                // Calcula o total de externos por departamento
+                const departamentoIndex = peoplesFromDepartaments.findIndex(
+                  (d) => d[0] === element.Departamento
+                );
+                if (departamentoIndex === -1) {
+                  peoplesFromDepartaments.push([element.Departamento, 1]);
+                } else {
+                  peoplesFromDepartaments[departamentoIndex][1] += 1;
+                }
+              });
+
+              // Calcula o total de externos
+              totalPeoples += externo.qntd_externo;
+
+              departamentos.sort();
+              return { departamentos, totalPeoples, peoplesFromDepartaments };
+            },
+            { departamentos: [], totalPeoples: 0, peoplesFromDepartaments: [] }
+          );
+
+          result.peoplesFromDepartaments.unshift([
+            "Departamento",
+            "Quantidade",
+          ]);
 
           callback(null, result);
         } catch (err) {
@@ -137,8 +146,8 @@ class externosControler {
         }
       });
     }
-  
-    readJson(file, (err, data) => {
+
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {
