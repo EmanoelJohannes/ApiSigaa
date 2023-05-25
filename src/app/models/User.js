@@ -97,7 +97,7 @@ class UserModel {
     var result;
 
     await db("usuario")
-      .select('*')
+      .select('id', 'name', 'email')
       .where({
         id
       })

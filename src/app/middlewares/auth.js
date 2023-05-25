@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
     try{
         const decoded = await util.promisify(jwt.verify)(token, authConfig.secret);
 
-        req.userCpf = decoded.nucpf;
+        req.id = decoded.id;
         
         return next();
 
