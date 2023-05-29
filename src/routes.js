@@ -40,6 +40,7 @@ routes.get('/metrics-public', metricsController.getPublicMetric);
 routes.get('/metrics-public-by-year/:year', metricsController.getPublicMetricByYear);
 
 routes.get('/generalMetrics', generalMetricsController.getGeneralMetrics);
+routes.post('/generalMetrics-in-departaments', generalMetricsController.getGeneralMetricsByDepartament);
 
 
 
