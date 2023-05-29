@@ -28,6 +28,37 @@ class SessionController {
             return res.json({error: "Email não encontrado."});
         }
     }    
+
+    async authenticate(req, res){
+        const authHeader = req.headers.authorization;        
+
+        if (!authHeader) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+      
+        try {
+          // Verificar e decodificar o token
+
+          const [, token] = authHeader.split(' ');
+
+          const decoded = jwt.verify(token, authConfig.secret);
+          const { id } = decoded;
+      
+          // Buscar o usuário com base no ID
+          const user = await User.findById(id);
+          
+          console.log(user[0]);
+
+          if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+          }
+      
+          // Retornar as informações do usuário
+          return res.json(user[0]);
+        } catch (error) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+    }    
 }
 
 module.exports = new SessionController();

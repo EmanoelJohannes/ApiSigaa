@@ -14,11 +14,16 @@ const metricsController = require('./app/controllers/MetricsController');
 
 const generalMetricsController = require('./app/controllers/GeneralMetrics');
 
-// Rotas a partir desse ponto são rotas com autentificação
 routes.get('/users', userController.getUsers);
 routes.post('/storeUser', userController.storeUser);
 
 routes.post('/authenticate', sessionController.store);
+
+// Rotas a partir desse ponto são rotas com autentificação
+
+routes.get('/authenticate', sessionController.authenticate);
+
+routes.use(authMiddleware);
 
 routes.get('/docentes', docentesController.getDocentes);
 routes.get('/docentesNaoRepetidos', docentesController.getDocentesNaoRepetidos);
@@ -44,6 +49,5 @@ routes.post('/generalMetrics-in-departaments', generalMetricsController.getGener
 
 
 
-routes.use(authMiddleware);
 
 module.exports = routes;
