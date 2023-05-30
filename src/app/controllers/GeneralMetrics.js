@@ -115,55 +115,55 @@ class GeneralController {
               let totalConcluidos = acc.totalConcluidos;
               const yearsProject = acc.yearsProject;
 
-              // Adiciona o ano à lista de anos encontrados
               current.forEach((projeto) => {
                 //let departametToFilter = projeto.docentes.find((doc) => doc.Funcao === "COORDENADOR(A) GERAL" && doc.Departamento === departamentsBody[0])
 
                 const year = parseInt(projeto.codigo.split('-')[1]);
                 if (year.toString() === departamentsBody[1] || !departamentsBody[1]) {
-                  // Calcula o total de docentes do departamento
-                  projeto.docentes.map((docent) => {
-                    if (docent.Departamento === departamentsBody[0]) {
-                      totalManager += 1;
-                    }
-                  });
 
-                  // Calcula o total de discentes do departamento
-                  projeto.discente.map((discent) => {
-                    if (discent.Departamento === departamentsBody[0]) {
-                      totalDiscentes += 1;
+                  departamentsBody[0].map((compareDep) => {
+                    projeto.docentes.map((docent) => {
+                      if (docent.Departamento === compareDep) {
+                        totalManager += 1;
+                      }
+                    });
+  
+                    projeto.discente.map((discent) => {
+                      if (discent.Departamento === compareDep) {
+                        totalDiscentes += 1;
+                      }
+                    });
+  
+                    projeto.externo_equipe.map((discent) => {
+                      if (discent.Departamento === compareDep) {
+                        totalExterno += 1;
+                      }
+                    });
+  
+                    if (
+                      projeto.docentes.find(
+                        (docent) =>
+                          docent.Departamento === compareDep &&
+                          docent.Funcao === 'COORDENADOR(A) GERAL'
+                      )
+                    ) {
+                      totalProjetos += 1;
+                      if (projeto.situacao === 'CONCLUÍDA') {
+                        totalConcluidos += 1;
+                      }
+  
+                      // Verifica se o ano já está presente no objeto de resultados
+                      const index = yearsProject.findIndex(
+                        (item) => item[0] === year
+                      );
+                      if (index === -1) {
+                        yearsProject.push([year, 1]);
+                      } else {
+                        yearsProject[index][1] += 1;
+                      }
                     }
-                  });
+                  })
 
-                  // Calcula o total de externos do departamento
-                  projeto.externo_equipe.map((discent) => {
-                    if (discent.Departamento === departamentsBody[0]) {
-                      totalExterno += 1;
-                    }
-                  });
-
-                  if (
-                    projeto.docentes.find(
-                      (docent) =>
-                        docent.Departamento === departamentsBody[0] &&
-                        docent.Funcao === 'COORDENADOR(A) GERAL'
-                    )
-                  ) {
-                    totalProjetos += 1;
-                    if (projeto.situacao === 'CONCLUÍDA') {
-                      totalConcluidos += 1;
-                    }
-
-                    // Verifica se o ano já está presente no objeto de resultados
-                    const index = yearsProject.findIndex(
-                      (item) => item[0] === year
-                    );
-                    if (index === -1) {
-                      yearsProject.push([year, 1]);
-                    } else {
-                      yearsProject[index][1] += 1;
-                    }
-                  }
                 }
               });
 
@@ -191,6 +191,7 @@ class GeneralController {
 
           callback(null, result);
         } catch (err) {
+          console.log(err)
           callback(err);
         }
       });
