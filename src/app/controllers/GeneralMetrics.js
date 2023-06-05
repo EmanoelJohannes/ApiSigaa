@@ -12,6 +12,13 @@ class GeneralController {
         }
         try {
           const docentesData = JSON.parse(data);
+
+          let resultTipoFinanciamento = [
+            ['FINANCIAMENTO INTERNO', 0],
+            ['AÇÃO AUTO-FINANCIADA', 0],
+            ['FINANCIAMENTO EXTERNO', 0],
+          ];
+
           // Processa os dados utilizando o método reduce
           const result = docentesData.reduce(
             (acc, current) => {
@@ -23,6 +30,10 @@ class GeneralController {
               let totalProjetos = acc.totalProjetos;
               let totalConcluidos = acc.totalConcluidos;
               const yearsProject = acc.yearsProject;
+              let tiposFinanciamentos = acc.tiposFinanciamentos;
+              let estimadoInterno = acc.estimadoInterno;
+              let estimadoExterno = acc.estimadoExterno;
+              let atingido = acc.atingido;
 
               // Adiciona o ano à lista de anos encontrados
               current.forEach((projeto) => {
@@ -44,6 +55,28 @@ class GeneralController {
                 totalExterno += projeto.qntd_externo;
                 if (projeto.situacao === 'CONCLUÍDA') {
                   totalConcluidos += 1;
+
+                  let estimado_interno = projeto.estimado_interno;
+                  let estimado_externo = projeto.estimado_externo;
+
+                  estimado_interno = parseInt(
+                    estimado_interno.replace(/[^0-9]/g, '')
+                  );
+                  estimado_externo = parseInt(
+                    estimado_externo.replace(/[^0-9]/g, '')
+                  );
+
+                  if (!estimado_interno) {
+                    estimado_interno = 0;
+                  }
+
+                  if (!estimado_externo) {
+                    estimado_externo = 0;
+                  }
+
+                  estimadoInterno += estimado_interno;
+                  estimadoExterno += estimado_externo;
+                  atingido += projeto.publico_atingido;
                 }
                 projeto.docentes.forEach((docente) => {
                   // Popula o array de departamentos
@@ -51,6 +84,24 @@ class GeneralController {
                     departamentos.push(docente.Departamento);
                   }
                 });
+
+                if (tiposFinanciamentos.length) {
+                  let indexElement = -1;
+
+                  tiposFinanciamentos.map((tipo, index) => {
+                    if (tipo[0] === projeto.tipo_financiamento) {
+                      indexElement = index;
+                    }
+                  });
+
+                  if (indexElement > -1) {
+                    tiposFinanciamentos[indexElement][1] += 1;
+                  } else {
+                    tiposFinanciamentos.push([projeto.tipo_financiamento, 1]);
+                  }
+                } else {
+                  tiposFinanciamentos.push([projeto.tipo_financiamento, 1]);
+                }
                 totalProjetos += 1;
               });
 
@@ -64,6 +115,10 @@ class GeneralController {
                 totalProjetos,
                 totalConcluidos,
                 yearsProject,
+                tiposFinanciamentos,
+                estimadoExterno,
+                estimadoInterno,
+                atingido,
               };
             },
             {
@@ -74,12 +129,28 @@ class GeneralController {
               totalProjetos: 0,
               totalConcluidos: 0,
               yearsProject: [],
+              tiposFinanciamentos: [],
+              estimadoExterno: 0,
+              estimadoInterno: 0,
+              atingido: 0,
             }
           );
           result.yearsProject.unshift(['Ano', 'Total']);
 
+          result.tiposFinanciamentos.map((tipo) => {
+            resultTipoFinanciamento.map((result) => {
+              if (tipo[0].indexOf(result[0]) > -1) {
+                result[1] += tipo[1];
+              }
+            });
+          });
+
+          resultTipoFinanciamento.unshift(['Tipo', 'Total']);
+          result.tiposFinanciamentos = resultTipoFinanciamento;
+
           callback(null, result);
         } catch (err) {
+          console.log(err);
           callback(err);
         }
       });
@@ -103,6 +174,12 @@ class GeneralController {
         try {
           const departamentsBody = req.body;
 
+          let resultTipoFinanciamento = [
+            ['FINANCIAMENTO INTERNO', 0],
+            ['AÇÃO AUTO-FINANCIADA', 0],
+            ['FINANCIAMENTO EXTERNO', 0],
+          ];
+
           const docentesData = JSON.parse(data);
           // Processa os dados utilizando o método reduce
           const result = docentesData.reduce(
@@ -114,32 +191,39 @@ class GeneralController {
               let totalProjetos = acc.totalProjetos;
               let totalConcluidos = acc.totalConcluidos;
               const yearsProject = acc.yearsProject;
+              let tiposFinanciamentos = acc.tiposFinanciamentos || [];
+              let estimadoInterno = acc.estimadoInterno;
+              let estimadoExterno = acc.estimadoExterno;
+              let atingido = acc.atingido;
 
               current.forEach((projeto) => {
                 //let departametToFilter = projeto.docentes.find((doc) => doc.Funcao === "COORDENADOR(A) GERAL" && doc.Departamento === departamentsBody[0])
 
                 const year = parseInt(projeto.codigo.split('-')[1]);
-                if (year.toString() === departamentsBody[1] || !departamentsBody[1]) {
-
+                if (
+                  year.toString() === departamentsBody[1] ||
+                  !departamentsBody[1]
+                ) {
                   departamentsBody[0].map((compareDep) => {
                     projeto.docentes.map((docent) => {
+                      //METRICA DE TOTAL DE DOCENTE/DISCENTE/EXTERNO
                       if (docent.Departamento === compareDep) {
                         totalManager += 1;
                       }
                     });
-  
+
                     projeto.discente.map((discent) => {
                       if (discent.Departamento === compareDep) {
                         totalDiscentes += 1;
                       }
                     });
-  
+
                     projeto.externo_equipe.map((discent) => {
                       if (discent.Departamento === compareDep) {
                         totalExterno += 1;
                       }
                     });
-  
+
                     if (
                       projeto.docentes.find(
                         (docent) =>
@@ -148,10 +232,32 @@ class GeneralController {
                       )
                     ) {
                       totalProjetos += 1;
+                      // METRICA DE CONCLUIDOS
                       if (projeto.situacao === 'CONCLUÍDA') {
                         totalConcluidos += 1;
+                        let estimado_interno = projeto.estimado_interno;
+                        let estimado_externo = projeto.estimado_externo;
+
+                        estimado_interno = parseInt(
+                          estimado_interno.replace(/[^0-9]/g, '')
+                        );
+                        estimado_externo = parseInt(
+                          estimado_externo.replace(/[^0-9]/g, '')
+                        );
+
+                        if (!estimado_interno) {
+                          estimado_interno = 0;
+                        }
+
+                        if (!estimado_externo) {
+                          estimado_externo = 0;
+                        }
+
+                        estimadoInterno += estimado_interno;
+                        estimadoExterno += estimado_externo;
+                        atingido += projeto.publico_atingido;
                       }
-  
+
                       // Verifica se o ano já está presente no objeto de resultados
                       const index = yearsProject.findIndex(
                         (item) => item[0] === year
@@ -161,9 +267,33 @@ class GeneralController {
                       } else {
                         yearsProject[index][1] += 1;
                       }
-                    }
-                  })
 
+                      // METRICA DE FINANCIAMENTO
+                      if (tiposFinanciamentos.length > 0) {
+                        let indexElement = -1;
+
+                        tiposFinanciamentos.map((tipo, index) => {
+                          if (tipo[0] === projeto.tipo_financiamento) {
+                            indexElement = index;
+                          }
+                        });
+
+                        if (indexElement > -1) {
+                          tiposFinanciamentos[indexElement][1] += 1;
+                        } else {
+                          tiposFinanciamentos.push([
+                            projeto.tipo_financiamento,
+                            1,
+                          ]);
+                        }
+                      } else {
+                        tiposFinanciamentos.push([
+                          projeto.tipo_financiamento,
+                          1,
+                        ]);
+                      }
+                    }
+                  });
                 }
               });
 
@@ -175,6 +305,10 @@ class GeneralController {
                 totalProjetos,
                 totalConcluidos,
                 yearsProject,
+                tiposFinanciamentos,
+                estimadoExterno,
+                estimadoInterno,
+                atingido,
               };
             },
             {
@@ -185,13 +319,28 @@ class GeneralController {
               totalProjetos: 0,
               totalConcluidos: 0,
               yearsProject: [],
+              tiposFinanciamentos: [],
+              estimadoExterno: 0,
+              estimadoInterno: 0,
+              atingido: 0,
             }
           );
           result.yearsProject.unshift(['Ano', 'Total']);
 
+          result.tiposFinanciamentos.map((tipo) => {
+            resultTipoFinanciamento.map((result) => {
+              if (tipo[0].indexOf(result[0]) > -1) {
+                result[1] += tipo[1];
+              }
+            });
+          });
+
+          resultTipoFinanciamento.unshift(['Tipo', 'Total']);
+          result.tiposFinanciamentos = resultTipoFinanciamento;
+
           callback(null, result);
         } catch (err) {
-          console.log(err)
+          console.log(err);
           callback(err);
         }
       });
