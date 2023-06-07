@@ -295,6 +295,10 @@ class GeneralController {
                     }
                   });
                 }
+                if(departamentsBody[0].length > 1){
+                  qntd_departamento = departamentsBody[0].length
+                }
+  
               });
 
               return {
