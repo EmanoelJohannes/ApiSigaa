@@ -23,9 +23,9 @@ class GeneralController {
           const result = docentesData.reduce(
             (acc, current) => {
               let totalManager = acc.totalManager;
+              const departamentos = acc.departamentos;
               let totalDiscentes = acc.totalDiscentes;
               let totalExterno = acc.totalExterno;
-              let departamentos = [];
               let qntd_departamento = 0;
               let totalProjetos = acc.totalProjetos;
               let totalConcluidos = acc.totalConcluidos;
@@ -107,7 +107,10 @@ class GeneralController {
 
               qntd_departamento = departamentos.length;
 
+              departamentos.sort();
+
               return {
+                departamentos,
                 totalManager,
                 totalDiscentes,
                 totalExterno,
@@ -122,6 +125,7 @@ class GeneralController {
               };
             },
             {
+              departamentos: [],
               totalManager: 0,
               totalDiscentes: 0,
               totalExterno: 0,
