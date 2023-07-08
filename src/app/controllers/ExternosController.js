@@ -4,7 +4,12 @@ const fs = require('fs');
 class externosControler {
 
   async getExternos (req, res) {
-    let file = path.join(__dirname,'../files/projetos.json');
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
 
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
@@ -13,7 +18,6 @@ class externosControler {
         }
         try {
           const externosData = JSON.parse(data);
-          console.log(externosData)
           
           // Processa os dados utilizando o método reduce
           const result = externosData.reduce((acc, current) => {
@@ -72,13 +76,12 @@ class externosControler {
 
           callback(null, result);
         } catch (err) {
-          console.log("Erro: ", err)
           callback(err);
         }
       });
     }
   
-    readJson(file, (err, data) => {
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {
@@ -89,7 +92,12 @@ class externosControler {
 
   async getExternosByYear(req, res) {
     const year = req.params.year;
-    let FILE = path.join(__dirname,'../files/projetos.json');
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
 
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
@@ -159,7 +167,12 @@ class externosControler {
 
   async getDepartamentInYears(req, res) {
     const departament = req.body;
-    let FILE = path.join(__dirname, '../files/projetos.json');
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
 
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
@@ -226,7 +239,6 @@ class externosControler {
                   });
                 });
               });
-              console.log(newDepartamentYears);
 
               return { departamentYears, newDepartamentYears };
             },
@@ -272,11 +284,9 @@ class externosControler {
           matrixData.forEach((arr) => {
             arr.splice(1, 1);
           });
-          console.log(matrixData);
 
           callback(null, { result, matrixData });
         } catch (err) {
-          console.log(err);
           callback(err);
         }
       });

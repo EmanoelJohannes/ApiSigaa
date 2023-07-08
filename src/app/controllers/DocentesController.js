@@ -1,12 +1,16 @@
-const path = require("path");
-const fs = require("fs");
-
-const FILE = path.join(__dirname, "../files/projetos.json");
+const path = require('path');
+const fs = require('fs');
 
 class UserController {
   async getDocentes(req, res) {
+    let fileRead = req.query.type;
+    if (!fileRead) {
+      fileRead = 'projetos';
+    }
+    let FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     function readJson(path, callback) {
-      fs.readFile(path, "utf8", (err, data) => {
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
           return callback(err);
         }
@@ -23,15 +27,13 @@ class UserController {
 
               // Adiciona o ano à lista de anos encontrados
               current.forEach((projeto) => {
-                const year = parseInt(projeto.codigo.split("-")[1]);
+                const year = parseInt(projeto.codigo.split('-')[1]);
 
                 // Adiciona o ano à lista de anos encontrados
                 years.add(year);
 
                 // Verifica se o ano já está presente no objeto de resultados
-                const index = yearsPeople.findIndex(
-                  (item) => item[0] === year
-                );
+                const index = yearsPeople.findIndex((item) => item[0] === year);
                 if (index === -1) {
                   yearsPeople.push([year, projeto.qntd_docente]);
                 } else {
@@ -79,11 +81,11 @@ class UserController {
           );
 
           result.peoplesFromDepartaments.unshift([
-            "Departamento",
-            "Quantidade",
+            'Departamento',
+            'Quantidade',
           ]);
 
-          result.yearsPeople.unshift(["Ano", "Total"]);
+          result.yearsPeople.unshift(['Ano', 'Total']);
 
           callback(null, result);
         } catch (err) {
@@ -102,8 +104,14 @@ class UserController {
   }
 
   async getDocentesNaoRepetidos(req, res) {
+    let fileRead = req.query.type;
+    if (!fileRead) {
+      fileRead = 'projetos';
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     function readJson(path, callback) {
-      fs.readFile(path, "utf8", (err, data) => {
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
           return callback(err);
         }
@@ -120,24 +128,30 @@ class UserController {
               const docentesContados = acc.docentesContados || {};
 
               current.forEach((projeto) => {
-                const year = parseInt(projeto.codigo.split("-")[1]);
+                const year = parseInt(projeto.codigo.split('-')[1]);
                 years.add(year);
 
                 if (!yearsDocentes.some((item) => item[0] === year)) {
                   yearsDocentes.push([year, projeto.qntd_docentes]);
                 } else {
-                  const index = yearsDocentes.findIndex((item) => item[0] === year);
+                  const index = yearsDocentes.findIndex(
+                    (item) => item[0] === year
+                  );
                   yearsDocentes[index][1] += projeto.qntd_docente;
                 }
 
-                let docentesNaoContados = projeto.docentes.filter((docente) => !docentesContados[docente.nome]);
-                
+                let docentesNaoContados = projeto.docentes.filter(
+                  (docente) => !docentesContados[docente.nome]
+                );
+
                 docentesNaoContados.forEach((docente) => {
                   if (departamentos.indexOf(docente.Departamento) === -1) {
                     departamentos.push(docente.Departamento);
                   }
 
-                  const departamentoIndex = peoplesFromDepartaments.findIndex((d) => d[0] === docente.Departamento);
+                  const departamentoIndex = peoplesFromDepartaments.findIndex(
+                    (d) => d[0] === docente.Departamento
+                  );
 
                   if (departamentoIndex >= 0) {
                     peoplesFromDepartaments[departamentoIndex][1] += 1;
@@ -173,11 +187,11 @@ class UserController {
           );
 
           result.peoplesFromDepartaments.unshift([
-            "Departamento",
-            "Quantidade",
+            'Departamento',
+            'Quantidade',
           ]);
 
-          result.yearsDocentes.unshift(["Ano", "Total"]);
+          result.yearsDocentes.unshift(['Ano', 'Total']);
 
           callback(null, result);
         } catch (err) {
@@ -197,9 +211,14 @@ class UserController {
 
   async getDocentesByYear(req, res) {
     const year = req.params.year;
+    let fileRead = req.query.type;
+    if (!fileRead) {
+      fileRead = 'projetos';
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
 
     function readJson(path, callback) {
-      fs.readFile(path, "utf8", (err, data) => {
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
           return callback(err);
         }
@@ -243,8 +262,8 @@ class UserController {
           );
 
           result.peoplesFromDepartaments.unshift([
-            "Departamento",
-            "Quantidade",
+            'Departamento',
+            'Quantidade',
           ]);
 
           callback(null, result);
@@ -264,13 +283,19 @@ class UserController {
   }
 
   async getDocentesLista(req, res) {
+    let fileRead = req.query.type;
+    if (!fileRead) {
+      fileRead = 'projetos';
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
     function readJson(path, callback) {
-      fs.readFile(path, "utf8", (err, data) => {
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
           return callback(err);
         }
@@ -294,117 +319,126 @@ class UserController {
   }
 
   async getDepartamentInYears(req, res) {
+    const departament = req.body;
+    let fileRead = req.query.type;
+    if (!fileRead) {
+      fileRead = 'projetos';
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
 
-    const departament = req.body
-    console.log(departament)
-
-    
     function readJson(path, callback) {
-      fs.readFile(path, "utf8", (err, data) => {
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
           return callback(err);
         }
         try {
           const docentesData = JSON.parse(data);
 
-          let firstArrayDep = []
+          let firstArrayDep = [];
 
-          firstArrayDep.push('Ano')
+          firstArrayDep.push('Ano');
 
-          departament.forEach((dep) =>{
-            firstArrayDep.push(dep)
-          })
+          departament.forEach((dep) => {
+            firstArrayDep.push(dep);
+          });
 
           // Processa os dados utilizando o método reduce
-          const result = docentesData.reduce((acc, docente) => {
-            const departamentYears = acc.departamentYears || [];
-            const newDepartamentYears = acc.newDepartamentYears || [];
+          const result = docentesData.reduce(
+            (acc, docente) => {
+              const departamentYears = acc.departamentYears || [];
+              const newDepartamentYears = acc.newDepartamentYears || [];
 
-            docente.forEach((member) => {
-              const year = parseInt(member.codigo.split("-")[1]);
+              docente.forEach((member) => {
+                const year = parseInt(member.codigo.split('-')[1]);
 
-              member.docentes.forEach((element) => {
-                departament.forEach((dep) => {
-                  if (element.Departamento === dep) {
+                member.docentes.forEach((element) => {
+                  departament.forEach((dep) => {
+                    if (element.Departamento === dep) {
+                      const index = departamentYears.findIndex(
+                        (el) => el[0] === year
+                      );
+                      const indexYear = newDepartamentYears.findIndex(
+                        (el) => el[0] === year
+                      );
+                      const indexDep = firstArrayDep.findIndex(
+                        (el) => el === dep
+                      );
 
-                    const index = departamentYears.findIndex((el) => el[0] === year);
-                    const indexYear = newDepartamentYears.findIndex((el) => el[0] === year);
-                    const indexDep = firstArrayDep.findIndex((el) => el === dep);
-
-                    if (departamentYears.length) {
-                      if (index === -1) {
-                        departamentYears.push([year, 1]);
+                      if (departamentYears.length) {
+                        if (index === -1) {
+                          departamentYears.push([year, 1]);
+                        } else {
+                          departamentYears[index][1] += 1;
+                        }
                       } else {
-                        departamentYears[index][1] += 1;
+                        departamentYears.push([year, 1]);
                       }
-                    } else {
-                      departamentYears.push([year, 1]);
-                    }
 
-                    if(newDepartamentYears.length){
-                      if(indexYear === -1){
+                      if (newDepartamentYears.length) {
+                        if (indexYear === -1) {
+                          newDepartamentYears.push([year, 1]);
+                        } else {
+                          if (!newDepartamentYears[indexYear][indexDep]) {
+                            newDepartamentYears[indexYear][indexDep] = 1;
+                          } else {
+                            newDepartamentYears[indexYear][indexDep] += 1;
+                          }
+                        }
+                      } else {
                         newDepartamentYears.push([year, 1]);
                       }
-                      else {
-                        if(!newDepartamentYears[indexYear][indexDep]){
-                          newDepartamentYears[indexYear][indexDep] = 1
-                        }else {
-                          newDepartamentYears[indexYear][indexDep] += 1;
-                        }
-                      }
-                    }else {
-                      newDepartamentYears.push([year, 1]);
                     }
-                  }
-                })
-
+                  });
+                });
               });
+
+              return { departamentYears, newDepartamentYears };
+            },
+            { departamentYears: [], newDepartamentYears: [] }
+          );
+
+          // Processa os dados utilizando o método reduce
+          const resultTeste = docentesData.reduce(
+            (acc, docente) => {
+              const yearDepartmentCounts = acc.yearDepartmentCounts || {};
+
+              docente.forEach((member) => {
+                const year = parseInt(member.codigo.split('-')[1]);
+
+                member.docentes.forEach((element) => {
+                  const department = element.Departamento;
+                  if (firstArrayDep.includes(department)) {
+                    yearDepartmentCounts[year] =
+                      yearDepartmentCounts[year] || {};
+                    yearDepartmentCounts[year][department] =
+                      yearDepartmentCounts[year][department] || 0;
+                    yearDepartmentCounts[year][department] += 1;
+                  }
+                });
+              });
+
+              return { yearDepartmentCounts };
+            },
+            { yearDepartmentCounts: {} }
+          );
+
+          // Organiza os dados no formato de matriz
+          const matrixData = [['Ano', ...firstArrayDep]];
+          Object.keys(resultTeste.yearDepartmentCounts).forEach((year) => {
+            const departmentCounts = resultTeste.yearDepartmentCounts[year];
+            const row = [parseInt(year)];
+            firstArrayDep.forEach((department) => {
+              row.push(departmentCounts[department] || 0);
             });
-            console.log(newDepartamentYears)
-
-            return {departamentYears, newDepartamentYears};
-          }, {departamentYears: [], newDepartamentYears: []});
-          
-
-        // Processa os dados utilizando o método reduce
-        const resultTeste = docentesData.reduce((acc, docente) => {
-          const yearDepartmentCounts = acc.yearDepartmentCounts || {};
-
-          docente.forEach((member) => {
-            const year = parseInt(member.codigo.split("-")[1]);
-
-            member.docentes.forEach((element) => {
-              const department = element.Departamento;
-              if (firstArrayDep.includes(department)) {
-                yearDepartmentCounts[year] = yearDepartmentCounts[year] || {};
-                yearDepartmentCounts[year][department] = yearDepartmentCounts[year][department] || 0;
-                yearDepartmentCounts[year][department] += 1;
-              }
-            });
+            matrixData.push(row);
           });
 
-          return {yearDepartmentCounts};
-        }, {yearDepartmentCounts: {}});
-
-        // Organiza os dados no formato de matriz
-        const matrixData = [['Ano', ...firstArrayDep]];
-        Object.keys(resultTeste.yearDepartmentCounts).forEach((year) => {
-          const departmentCounts = resultTeste.yearDepartmentCounts[year];
-          const row = [parseInt(year)];
-          firstArrayDep.forEach((department) => {
-            row.push(departmentCounts[department] || 0);
+          matrixData.forEach((arr) => {
+            arr.splice(1, 1);
           });
-          matrixData.push(row);
-        });
-        
-        matrixData.forEach((arr) => {
-          arr.splice(1, 1)
-        })
-        console.log(matrixData);
-          
-          callback(null, {result, matrixData});
+
+          callback(null, { result, matrixData });
         } catch (err) {
-          console.log(err)
           callback(err);
         }
       });

@@ -3,11 +3,15 @@ const fs = require("fs");
 
 class MetricsController {
   async getMetrics(req, res) {
-    let file = path.join(__dirname, "../files/projetos.json");
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
-          console.log(err);
           return callback(err);
         }
         try {
@@ -71,7 +75,7 @@ class MetricsController {
       });
     }
 
-    readJson(file, (err, data) => {
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {
@@ -82,11 +86,15 @@ class MetricsController {
 
 
   async getPublicMetric(req, res) {
-    let file = path.join(__dirname, "../files/projetos.json");
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
-          console.log(err);
           return callback(err);
         }
         try {
@@ -139,7 +147,7 @@ class MetricsController {
     }
     
 
-    readJson(file, (err, data) => {
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {
@@ -151,13 +159,17 @@ class MetricsController {
 
   async getPublicMetricByYear(req, res) {
     
-    let file = path.join(__dirname, "../files/projetos.json");
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     const year = req.params.year;
 
     function readJson(path, callback) {
       fs.readFile(path, "utf8", (err, data) => {
         if (err) {
-          console.log(err);
           return callback(err);
         }
         try {
@@ -212,7 +224,7 @@ class MetricsController {
     }
     
 
-    readJson(file, (err, data) => {
+    readJson(FILE, (err, data) => {
       if (err) {
         res.send(err);
       } else {

@@ -3,7 +3,11 @@ const fs = require('fs');
 
 class DiscentesController {
   async getDiscentes(req, res) {
-    let file = path.join(__dirname, '../files/projetos.json');
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    let file = path.join(__dirname, `../files/${fileRead}.json`);
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
@@ -100,7 +104,11 @@ class DiscentesController {
   }
 
   async getDiscentesByYear(req, res) {
-    let file = path.join(__dirname, '../files/projetos.json');
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    let file = path.join(__dirname, `../files/${fileRead}.json`);
     const year = req.params.year;
 
     function readJson(path, callback) {
@@ -178,7 +186,11 @@ class DiscentesController {
 
   async getDepartamentInYears(req, res) {
     const departament = req.body;
-    let FILE = path.join(__dirname, '../files/projetos.json');
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    let FILE = path.join(__dirname, `../files/${fileRead}.json`);
 
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
@@ -245,7 +257,6 @@ class DiscentesController {
                   });
                 });
               });
-              console.log(newDepartamentYears);
 
               return { departamentYears, newDepartamentYears };
             },
@@ -291,11 +302,9 @@ class DiscentesController {
           matrixData.forEach((arr) => {
             arr.splice(1, 1);
           });
-          console.log(matrixData);
 
           callback(null, { result, matrixData });
         } catch (err) {
-          console.log(err);
           callback(err);
         }
       });

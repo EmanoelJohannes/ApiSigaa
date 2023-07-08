@@ -1,10 +1,16 @@
 const path = require('path');
 const fs = require('fs');
 
-const FILE = path.join(__dirname, '../files/projetos.json');
+
 
 class GeneralController {
   async getGeneralMetrics(req, res) {
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
@@ -154,7 +160,6 @@ class GeneralController {
 
           callback(null, result);
         } catch (err) {
-          console.log(err);
           callback(err);
         }
       });
@@ -170,6 +175,13 @@ class GeneralController {
   }
 
   async getGeneralMetricsByDepartament(req, res) {
+
+    let fileRead = req.query.type
+    if(!fileRead){
+      fileRead = 'projetos'
+    }
+    const FILE = path.join(__dirname, `../files/${fileRead}.json`);
+
     function readJson(path, callback) {
       fs.readFile(path, 'utf8', (err, data) => {
         if (err) {
@@ -348,7 +360,6 @@ class GeneralController {
 
           callback(null, result);
         } catch (err) {
-          console.log(err);
           callback(err);
         }
       });
