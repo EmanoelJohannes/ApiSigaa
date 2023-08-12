@@ -248,12 +248,13 @@ class GeneralController {
                       )
                     ) {
                       totalProjetos += 1;
+
+                      
                       // METRICA DE CONCLUIDOS
                       if (projeto.situacao === 'CONCLUÍDA') {
                         totalConcluidos += 1;
                         let estimado_interno = projeto.estimado_interno;
                         let estimado_externo = projeto.estimado_externo;
-
                         estimado_interno = parseInt(
                           estimado_interno.replace(/[^0-9]/g, '')
                         );
