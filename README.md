@@ -13,7 +13,8 @@ O processo de coleta de dados do SIGAA é realizado por um script Python. Siga e
 
 1. Navegue até o diretório `src/app/files`.
 2. Certifique-se de ter o Python 3 instalado.
-3. Execute `python main.py` para iniciar a coleta de dados do SIGAA.
+3. Certifique-se de colocar seus dados de usuário e senha do SIGAA dentro do arquivo de script, para a correta execução do mesmo.
+4. Execute `python main.py` para iniciar a coleta de dados do SIGAA.
 
 ## Testes
 
