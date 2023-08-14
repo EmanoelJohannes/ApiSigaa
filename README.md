@@ -1,5 +1,3 @@
-# ApiSigaa
-
 # Projeto de Back-End - Extensão Universitária
 
 Bem-vindo ao repositório do Back-End do projeto de Extensão Universitária. Este é o componente que lida com a coleta de dados do SIGAA e oferece suporte aos endpoints para manipulação desses dados.
