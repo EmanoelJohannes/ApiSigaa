@@ -1,6 +1,6 @@
 import unittest
 from selenium.common.exceptions import NoSuchElementException
-from otimized import ColectMetricProjectsOtimized 
+from script import ColectMetricProjectsOtimized 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -14,6 +14,7 @@ class TestColectMetricProjectsOtimized(unittest.TestCase):
     def tearDown(self):
         self.collector.driver.quit()
 
+    # Teste para verificar se a identificação dos campos de login falharam
     def test_login_elements(self):
         self.collector.driver.get('https://sigaa.unb.br/sigaa/verTelaLogin.do')
 
@@ -25,6 +26,7 @@ class TestColectMetricProjectsOtimized(unittest.TestCase):
         except NoSuchElementException:
             self.fail("Campo username/password nao encontrado!")
 
+    # Teste para verificar se a identificação do botão de visualziar a ação falhou
     def test_lupa_elements(self):
 
         self.collector.driver.get('https://sigaa.unb.br/sigaa/verTelaLogin.do')

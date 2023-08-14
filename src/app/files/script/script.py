@@ -29,7 +29,11 @@ class ColectMetricProjectsOtimized:
         self.driver.get(f'https://sigaa.unb.br/sigaa/verTelaLogin.do')
         user_input = self.driver.find_element(By.NAME, 'username')
         pass_input = self.driver.find_element(By.NAME, 'password')
+
+        # Matricula da conta aqui
         user_input.send_keys("170140997")
+
+        # Senha da conta aqui
         pass_input.send_keys("Dia1406199")
         pass_input.send_keys(Keys.TAB)
         pass_input.send_keys(Keys.ENTER)
@@ -164,5 +168,5 @@ class ColectMetricProjectsOtimized:
         self.driver.quit()
 
 if __name__ == "__main__":
-    collector = ColectMetricProjects()
+    collector = ColectMetricProjectsOtimized()
     collector.grab_info()
